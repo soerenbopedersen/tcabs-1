@@ -11,6 +11,6 @@
   <body>
     <h1>Admin Role</h1>
 		<p>Hello World!!</p>
-    </ul>
+		<?php require("db-conn.php"); ?>
   </body>
 </html>
