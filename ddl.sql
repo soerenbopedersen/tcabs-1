@@ -7,8 +7,8 @@ CREATE TABLE Users (
 	lName				VARCHAR(255)			NOT NULL,
 	gender			VARCHAR(1),
 	pNum				VARCHAR(255),
-	email				VARCHAR(255),
-	pwd		VARCHAR(10),
+	email				VARCHAR(255)			NOT NULL,
+	pwd		VARCHAR(20)			NOT NULL,
 
 	PRIMARY KEY (userID)
 );
@@ -20,30 +20,23 @@ CREATE TABLE UserRole (
 	PRIMARY KEY (userRoleID)
 );
 
-/*
-CREATE TABLE Admin (
-	adminID			INT			AUTO_INCREMENT,
-
-);
-
 CREATE TABLE UserUserRole (
 	uurID			INT			AUTO_INCREMENT,
 	userID			INT			NOT NULL,
 	userRoleID			INT			NOT NULL,
-	adminID			INT,
-	convenorID			INT,
-	supervisorID			INT,
-	studentID			INT,
 
 	PRIMARY KEY (uurID),
 	FOREIGN KEY (userID) REFERENCES Users(userID),
 	FOREIGN KEY (userRoleID) REFERENCES UserRole(userRoleID)
-	FOREIGN KEY (adminID) REFERENCES Admin(adminID)
-	FOREIGN KEY (convenorID) REFERENCES Convenor(convenorID)
-	FOREIGN KEY (supervisorID) REFERENCES Supervisor(supervisorID)
-	FOREIGN KEY (studentID) REFERENCES Student(studentID)
 );
-*/
+
+CREATE TABLE Admin (
+	adminID			INT			AUTO_INCREMENT,
+	uurID			INT			NOT NULL,
+
+	PRIMARY KEY (adminID),
+	FOREIGN KEY (uurID) REFERENCES UserUserRole(uurID)
+);
 
 CREATE TABLE Student (
 	studentID			INT			AUTO_INCREMENT,
@@ -77,7 +70,7 @@ CREATE TABLE UnitOffering (
 	unitID			INT			NOT NULL,
 	convenorID			INT			NOT NULL,
 	period			VARCHAR(50)			NOT NULL,
-	censusDate			VARCHAR(10)			NOT NULL,
+	censusDate			VARCHAR(20)			NOT NULL,
 
 	PRIMARY KEY (unitOfferingID),
 	FOREIGN KEY (unitID) REFERENCES Unit(unitID),
