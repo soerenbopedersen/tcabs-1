@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Register Form</title>
+</head>
+<body>
+	<h1>Register New Employee</h1>
+<form action="insert.php" method="POST">
+	<table>
+		<tr>
+			<td>ID :</td>
+			<td><input type="text" placeholder="User ID" name="UID" required></td>
+		</tr>
+		<tr>
+			<td>Role :</td>
+			<td>
+				<select name="Role" required>
+					<option selected hidden value="">Role</option>
+					<option value="Administrator">Administrator</option>
+					<option value="Convenor">Convenor</option>
+					<option value="Supervisor">Supervisor</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>First Name :</td>
+			<td><input type="text" placeholder="First Name" name="Fname" required></td>
+		</tr>
+		<tr>
+			<td>Last Name :</td>
+			<td><input type="text" placeholder="Last Name" name="Lname" required></td>
+		</tr>
+		<tr>
+			<td>Gender :</td>
+			<td>
+				<form>
+				  <input type="radio" name="Gender" value="Male" required> Male<br>
+				  <input type="radio" name="Gender" value="Female" required> Female<br>
+				  <input type="radio" name="Gender" value="Unspecified" required> Unspecified
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<td>Work Email :</td>
+			<td><input type="email" placeholder="Work Email" name="Work_Email" required></td>
+		</tr>
+	<tr>
+		<td>Phone No. :</td>
+		<td>
+			<select name="phoneCode" required>
+				<option selected hidden value="">Country Code</option>
+				<option value="+61">AU +61</option>
+				<option value="+45">DK +45</option>
+			</select>
+				<input type="Phone" placeholder="Phone No." name="Phone" required>
+		</td>
+	</tr>
+	<tr>
+		<td>Start Date :</td>
+		<td><input type="date" placeholder="YYYY-MM-DD" name="Start_Date" required></td>
+	</tr>
+	<tr>
+		<td>End Date :</td>
+		<td><input type="date" placeholder="YYYY-MM-DD" name="End_Date" required></td>
+	</tr>
+	<tr>
+		<td>Password :</td>
+		<td><input type="password" placeholder="Password" name="Password" required></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><input type="submit" value="Submit"></td>
+	</tr>
+	</table>
+</form>
+</body>
+</html>
