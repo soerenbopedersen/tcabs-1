@@ -10,10 +10,7 @@
     die("ERROR: Unable to connect: " . $conn->connect_error);
   } 
 
-  echo 'Connected to the database.<br><br>';
-	echo 'Listing all student enrolments!!<br><br>';
-	echo '-------------------------------------------------------------------------------<br><br>';
-
+/*
 	echo '| EnrolmentID | StudentID | StudenName | UnitCode | UnitName | UnitPeriod |<br>';
 
 	$mysql = "select Enrolment.enrolmentID, Student.studentID, Users.fName, Users.lName, Unit.unitCode, Unit.unitName, UnitOffering.period
@@ -36,5 +33,5 @@
     echo "0 results";
 	}
 
-  $conn->close();
+*/
 ?>
