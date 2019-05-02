@@ -10,6 +10,7 @@ CREATE TABLE Users (
 	email				VARCHAR(255)			NOT NULL,
 	pwd		VARCHAR(20)			NOT NULL,
 
+
 	PRIMARY KEY (userID)
 );
 
