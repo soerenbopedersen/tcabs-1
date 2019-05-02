@@ -13,6 +13,7 @@
 
 		public static function getUser($userEmail) {
 			$User = new User();
+			// Use prepare statement to avoid SQL injection like Shannon's code
 			$sql = "SELECT * FROM Users WHERE email = '$userEmail'" or die($GLOBALS['conn']->error);
 			$result = $GLOBALS['conn']->query($sql);
 
