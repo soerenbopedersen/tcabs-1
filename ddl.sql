@@ -8,6 +8,23 @@ CREATE TABLE UserRole (
 	PRIMARY KEY (userRoleID)
 );
 
+CREATE TABLE Functions (
+	functionID			INT						AUTO_INCREMENT,
+	procName		VARCHAR(50)				NOT NULL,
+
+	PRIMARY KEY (functionID)
+);
+
+CREATE TABLE Permission (
+	permissionID				INT				AUTO_INCREMENT,
+	userRoleID					INT				NOT NULL,
+	functionID					INT				NOT NULL,
+
+	PRIMARY KEY (permissionID),
+	FOREIGN KEY (userRoleID) REFERENCES UserRole (userRoleID),
+	FOREIGN KEY (functionID) REFERENCES Functions (functionID)
+);
+
 CREATE TABLE Users (
 	userID							INT				AUTO_INCREMENT,
 	fName				VARCHAR(255)			NOT NULL,
@@ -91,3 +108,7 @@ INSERT INTO tcabs.TeachingPeriod VALUES ("Summer", "2018");
 INSERT INTO tcabs.UnitOffering VALUES (1, 1, 4, "Semester 2", "2018", "31 March 2018");
 
 INSERT INTO tcabs.Enrolment VALUES (1, 3, 1);
+
+INSERT INTO tcabs.Functions VALUES (1, "registerUser");
+
+INSERT INTO tcabs.Permission VALUES (1, 1, 1);
