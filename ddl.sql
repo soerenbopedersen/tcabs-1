@@ -90,7 +90,7 @@ INSERT INTO tcabs.UserRole VALUES (8, "student");
 
 INSERT INTO tcabs.Users VALUES (1, "Daenerys", "Targaryen", "1", "F", "0412323443", "dtargaryen@gmail.com", "motherofdragons");
 INSERT INTO tcabs.Users VALUES (2, "Tyrion", "Lannister", "6", "M", "0412332543", "tlannister@gmail.com", "lannisteralwayspaysitsdebt");
-INSERT INTO tcabs.Users VALUES (3, "John", "Snow", "8", "M", "0412332243", "jsnow@gmail.com", "kingingthenorth");
+INSERT INTO tcabs.Users VALUES (3, "John", "Snow", "8", "M", "0412332243", "jsnow@gmail.com", "kinginthenorth");
 INSERT INTO tcabs.Users VALUES (4, "Robert", "Baratheon", "4", "M", "0412332263", "rbaratheon@gmail.com", "rulerofsevenkingdoms");
 INSERT INTO tcabs.Users VALUES (5, "Arya", "Stark", "3", "F", "0412332263", "astark@gmail.com", "thereisonlyonegod");
 

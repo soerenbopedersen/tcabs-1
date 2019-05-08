@@ -1,8 +1,14 @@
 <!-- The main page of the system will show relevant functionality according to user role -->
 <?php
-	if($_SERVER['REQUEST_METHOD'] == 'POST') {
-		$_SESSION['logged_in'] = FALSE;	
+	session_start();
+
+	if($_SESSION['logged_in'] = FALSE) {
 		header("location: login.php");
+		exit();
+	}	else if($_SESSION['logged_in'] == TRUE) {
+		if($_SERVER['REQUEST_METHOD'] == 'POST') {
+			require("signup.php");
+		}
 	}
 ?>
 

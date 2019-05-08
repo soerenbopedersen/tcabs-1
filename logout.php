@@ -1,7 +1,8 @@
 <?php
-session_start();
-session_destroy();
+	require_once("db-conn.php");
+	session_start();
+	session_destroy();
 
-// Redirect to the login page:
-header('Location: login.php');
+	// Redirect to the login page:
+	header('Location: login.php');
 ?>

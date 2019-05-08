@@ -3,12 +3,45 @@
 	session_start();	// initailize session variable
 
  	if (isset($_SESSION['logged_in'])) {
-     header('Location: dashboard.php');
-     exit();
-	}
+  	header('Location: dashboard.php');
+  	exit();
+	} else {
+		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	if($_SERVER['REQUEST_METHOD'] == 'POST') {
-		require("login-user.php");
+			// User login process check if email and password exists and is correct
+			require_once('classes.php');
+
+			$email = $_POST['email'];
+			$loginUser = new User();
+
+			if(!$loginUser::userExist($email)) {
+				header("location: login.php");
+			} else {
+				//$salt = "tcabs";
+				//$pwdHash = sha1($_POST['pwd'].$salt);
+
+				if(!$loginUser::checkPwd($email, $_POST['pwd'])) {
+					header("location: login.php");
+				} else {
+					$_SESSION['logged_in'] = TRUE;	// to be checked before displaying dashboard
+
+					$loginUser = $loginUser::getUser($email);
+
+					$_SESSION['email'] = $loginUser->email;
+					$_SESSION['fName'] = $loginUser->fName;
+					$_SESSION['lName'] = $loginUser->lName;
+					$_SESSION['userID'] = $loginUser->userID;
+
+					//Retrive all the permissions of the uer logged in and redirect to dashboard.php
+			
+					while($loginUser->permissions) {
+						echo $loginUser->permissions;
+					}
+
+					header("location: dashboard.php"); // login and redirect to main page
+				}
+			}
+		}
 	}
 ?>
 
