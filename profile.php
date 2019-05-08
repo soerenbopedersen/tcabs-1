@@ -1,27 +1,30 @@
 <?php
-	// We need to use sessions, so you should always start sessions using the below code.
-	session_start();
-	// If the user is not logged in redirect to the login page...
-	if (!isset($_SESSION['logged_in'])) {
-		header('Location: login.php');
-		exit();
+
+session_start();
+	if($_SERVER['REQUEST_METHOD'] == 'POST') {
+		$_SESSION['logged_in'] = FALSE;	
+		header("location: login.php");
 	}
 ?>
 
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Profile Page</title>
-		<link href="public/style.css" rel="stylesheet" type="text/css">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-	</head>
-	<body class="loggedin">
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Stylesheets -->
+	<?php include "stylesheet.php"; ?>
+  </head>
+
+<?php include "header.php"; ?>
+
+  <body class="loggedin">
+  
 	
-		<?php include "header.php";  ?>
-		
 		<div class="content">
-			<h2><?php echo $_SESSION['fName'] . " " .  $_SESSION['lName']; ?></h2>
+			<h2>Welcome, <?php echo $_SESSION['fName'] . " " .  $_SESSION['lName']; ?></h2>
 			<div>
 				<p>Your account details are below:</p>
 				<table>
@@ -30,18 +33,25 @@
 						<td><?php echo $_SESSION['fName'] . " " .  $_SESSION['lName']; ?></td>
 					</tr>
 					<tr>
-						<td>Email:</td>
-						<td><?php echo $_SESSION['email']?></td>
+						<td>Username:</td>
+						<td><?=$_SESSION['name']?></td>
 					</tr>
-					<!--<tr>
-						<td>Date of Birth:</td>
-						<td><//?=$dob?></td>
-					</tr>-->
 					<tr>
+						<td>Password:</td>
+						<td><?=$password?></td>
+					</tr>
+					<tr>
+						<td>Date of Birth:</td>
+						<td><?=$dateofBirth?></td>
+					</tr>
+					<tr>
+						<td>Email:</td>
+						<td><?=$email?></td>
+					</tr>
 				</table>
 			</div>
 		</div>
-
-		<?php include "footer.php";  ?>
-	</body>
+  </body>
+  
+  	<?php include "footer.php";  ?>  
 </html>
