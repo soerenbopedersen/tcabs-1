@@ -10,8 +10,8 @@
 	if($loginUser == null) {
 		echo 'User does not exist';
 	} else {
-			$salt = "tcabs";
-			$password_encrypted = sha1($_POST['password'].$salt);
+			// $salt = "tcabs";
+			$password_encrypted = sha1($_POST['pwd']);
 
 		if($password_encrypted == $loginUser->pwd) {
 			$_SESSION['email'] = $loginUser->email;
