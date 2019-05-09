@@ -11,23 +11,20 @@
       <li class="nav-item">
         <a class="nav-link" href="profile.php">Profile</a>
       </li>
-	  <li class="nav-item dropdown">
+	  	<li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-user-secret"></i> Admin
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="registerUser.php">Add Users</a>
+          <a class="dropdown-item" href="views/registerUser.php">Add Users</a>
           <a class="dropdown-item" href="#">Add Units</a>
           <a class="dropdown-item" href="#">Enrol Students</a>
         </div>
       </li>
-	  
-	  <li class="nav-item">
+	  	<li class="nav-item">
         <a class="nav-link" href="logout.php">Logout</a>
       </li>
-	  
     </ul>
-      <?php echo date(' (l) d F Y h:ia'); ?>
-    </span>
+    <?php echo date(' (l) d F Y h:ia'); ?>
   </div>
 </nav>

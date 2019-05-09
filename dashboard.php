@@ -8,7 +8,7 @@
 		exit();
 	}	else if($_SESSION['logged_in'] == TRUE) {
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
-			require("signup.php");
+			//require("signup.php");
 		}
 	}
 ?>
@@ -20,27 +20,19 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<!-- Stylesheets -->
-	<?php include "stylesheet.php"; ?>
+		<!-- Stylesheets -->
+		<?php include "styles/stylesheet.php"; ?>
   </head>
 
-	<?php include "header.php"; ?>
-
   <body class="loggedin">
+		<?php include "views/header.php"; ?>
   
-	<div class="content">
-		<h2>Welcome, <?php echo $_SESSION['fName']?></h2><h2-date><?php echo date('d F, Y (l)'); ?></h2-date><br>
-		<div>
-	<p> Here </p>
-	</div>
-	</div>
-
-<!-- 
-		<form action="dashboard.php" method="post">
-			<button type="submit">Logout</button>
-		</form>
--->
+		<div class="content">
+			<h2>Welcome, <?php echo $_SESSION['fName']?></h2><h2-date><?php echo date('d F, Y (l)'); ?></h2-date><br>
+			<div>
+				<p> Here </p>
+			</div>
+		</div>
   </body>
-  
-  	<?php include "footer.php";  ?>  
+  <?php include "views/footer.php"; ?>  
 </html>

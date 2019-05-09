@@ -15,10 +15,10 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<!-- Stylesheets -->
-	<?php include "stylesheet.php"; ?>
+	<?php include "styles/stylesheet.php"; ?>
   </head>
 
-<?php include "header.php"; ?>
+<?php include "views/header.php"; ?>
 
   <body class="loggedin">
 	
@@ -44,5 +44,5 @@ session_start();
 		</div>
   </body>
   
-  	<?php include "footer.php";  ?>  
+  	<?php include "views/footer.php";  ?>  
 </html>
