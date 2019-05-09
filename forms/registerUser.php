@@ -4,10 +4,6 @@
 	if (!isset($_SESSION['logged_in'])) {
 		header('Location: login.php');
 		exit();
-	} else {
-		if($_SERVER['REQUEST_METHOD'] == 'POST') {
-			// After the form is submitted -> add code here
-		}
 	}
 ?>
 
@@ -27,9 +23,9 @@
 		<div class="content">
 			<h2>Register User</h2><h2-date><?php echo date('d F, Y (l)'); ?></h2-date><br>
 		<div>
-		<form action="registerUser.php" method ="post" class="was-validated">
+		<form action="registerUsertoDB.php" method ="post" class="was-validated">
   	  <p class="h4 mb-4 text-center">Register User into TCABS</p>
-			<a href="bulkImportUser.php"><p class="p text-center">Bulk Import</p></a><br>
+			<a href="bulkImportUser.php"><p class="p text-center">or bulk import</p></a><br>
 			<input type="text" id="fName" class="form-control" placeholder="First Name" required><br>
  	   	<input type="text" id="lName" class="form-control" placeholder="Last Name" required><br>
 			<select class="browser-default custom-select" id="gender" required>
@@ -53,7 +49,7 @@
    				<label class="checkbox-inline"><input type="checkbox" value="1"> Supervisor</label>
     		</div>
 				<div class="col">
-    			<label class="checkbox-inline"><input type="checkbox" value="1"> Student</label>
+    			<label class="checkbox-inline"><input type="checkbox" value=""> Student</label>
     		</div>
 			</div>
   		<button class="btn btn-info my-4 btn-block" type="submit">Register</button>

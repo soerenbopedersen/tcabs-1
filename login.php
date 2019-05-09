@@ -34,7 +34,7 @@
 			
 					//echo $loginUser->permissions->procName;
 
-					//header("location: dashboard.php"); // login and redirect to main page
+					header("location: dashboard.php"); // login and redirect to main page
 				}
 			}
 		}
