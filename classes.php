@@ -39,6 +39,7 @@
 		public $userID;
 		public $fName;
 		public $lName;
+		public $userRoleID;
 		public $email;
 		public $gender;
 		public $pwd;
