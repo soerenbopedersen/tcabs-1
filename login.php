@@ -11,34 +11,34 @@
 			// User login process check if email and password exists and is correct
 			require_once('classes.php');
 
-			$email = $_POST['email'];
-			$loginUser = new User();
+			//$email = $_POST['email'];
+			//$loginUser = new User();
+			$loginUser = new User($_POST['email']);
 
-			if(!$loginUser::userExist($email)) {
-				header("location: login.php");
+			if(!$loginUser::userExist()) {
+				//header("location: login.php");
 			} else {
 				//$salt = "tcabs";
 				//$pwdHash = sha1($_POST['pwd'].$salt);
 
-				if(!$loginUser::checkPwd($email, $_POST['pwd'])) {
+				if(!$loginUser::checkPwd($_POST['pwd'])) {
 					header("location: login.php");
 				} else {
 					$_SESSION['logged_in'] = TRUE;	// to be checked before displaying dashboard
 
-					$loginUser = $loginUser::getUser($email);
+					//$loginUser = $loginUser::getUser($email);
 
 					$_SESSION['email'] = $loginUser->email;
 					$_SESSION['fName'] = $loginUser->fName;
 					$_SESSION['lName'] = $loginUser->lName;
 					$_SESSION['userID'] = $loginUser->userID;
 
+					echo $_SESSION['fName'];
 					//Retrive all the permissions of the uer logged in and redirect to dashboard.php
 			
-					while($loginUser->permissions) {
-						echo $loginUser->permissions;
-					}
+						//echo $loginUser->permissions->procName;
 
-					header("location: dashboard.php"); // login and redirect to main page
+					//header("location: dashboard.php"); // login and redirect to main page
 				}
 			}
 		}
