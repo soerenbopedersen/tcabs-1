@@ -11,32 +11,28 @@
 			// User login process check if email and password exists and is correct
 			require_once('classes.php');
 
-			//$email = $_POST['email'];
-			//$loginUser = new User();
 			$loginUser = new User($_POST['email']);
 
-			if(!$loginUser::userExist()) {
+			if(!$loginUser->userExist()) {
 				header("location: login.php");
 			} else {
 				//$salt = "tcabs";
 				//$pwdHash = sha1($_POST['pwd'].$salt);
 
-				if(!$loginUser::checkPwd($_POST['pwd'])) {
+				if(!$loginUser->checkPwd($_POST['pwd'])) {
 					header("location: login.php");
 				} else {
 					$_SESSION['logged_in'] = TRUE;	// to be checked before displaying dashboard
 
-					//$loginUser = $loginUser::getUser($email);
-
 					$_SESSION['email'] = $loginUser->email;
 					$_SESSION['fName'] = $loginUser->fName;
 					$_SESSION['lName'] = $loginUser->lName;
-					$_SESSION['userID'] = $loginUser->userID;
+					$_SESSION['pNum'] = $loginUser->pNum;
+					$_SESSION['userType'] = $loginUser->userType;
 
-					echo $_SESSION['fName']
 					//Retrive all the permissions of the uer logged in and redirect to dashboard.php
 			
-						//echo $loginUser->permissions->procName;
+					//echo $loginUser->permissions->procName;
 
 					//header("location: dashboard.php"); // login and redirect to main page
 				}

@@ -21,7 +21,6 @@ session_start();
 <?php include "header.php"; ?>
 
   <body class="loggedin">
-  
 	
 		<div class="content">
 			<h2>Welcome, <?php echo $_SESSION['fName'] . " " .  $_SESSION['lName']; ?></h2>
@@ -34,19 +33,11 @@ session_start();
 					</tr>
 					<tr>
 						<td>Username:</td>
-						<td><?=$_SESSION['name']?></td>
+						<td><?php echo $_SESSION['email']?></td>
 					</tr>
 					<tr>
-						<td>Password:</td>
-						<td><?=$password?></td>
-					</tr>
-					<tr>
-						<td>Date of Birth:</td>
-						<td><?=$dateofBirth?></td>
-					</tr>
-					<tr>
-						<td>Email:</td>
-						<td><?=$email?></td>
+						<td>Phone Number:</td>
+						<td><?php echo $_SESSION['pNum']?></td>
 					</tr>
 				</table>
 			</div>
