@@ -1,35 +1,27 @@
 <?php
-
 	// Define different classes with relevant and useful functions here
-
 	require("db-conn.php");	// connect to database
 
 	class Permission {
 		public $permissions;
 
-		public function __construct($userType) {
+		protected function __construct($userEmail) {
 			$this->permissions = array();
 
-			/*
-			$sql = "SELECT procName FROM Functions AS F 
-							INNER JOIN Permission AS P ON F.procName = P.procName
-							INNER JOIN UserRole AS UR ON P.userType = UR.userType  
-							INNER JOIN UserCat AS UC ON UR.userType = UC.userType  
-							WHERE UC.email = '" . "?" . "';";
-
-			$result = $GLOBALS['conn']->prepare($sql);
-			$result->bind_param("s", $userEmail);
-			$result->execute();
-			*/
-
 			// might need to use sub queries in the future
-			$sql = "SELECT procName FROM Functions AS F 
-							INNER JOIN Permission AS P ON F.functionID = P.functionID
-							INNER JOIN UserRole AS UR ON P.userType = UR.userType  
-							INNER JOIN UserCat AS UC ON UR.userType = UC.userType  
-							WHERE P.userType = '" . $userType . "';";
+			//$sql = "SELECT procName FROM Permission AS P 
+			//				INNER JOIN UserRole AS UR ON P.userType = UR.userType  
+			//				INNER JOIN UserCat AS UC ON UR.userType = UC.userType  
+			//				WHERE P.userType = '" . $userType . "';";
 
-			$result = $GLOBALS['conn']->query($sql);
+			// using subquery
+			$sql = "SELECT procName FROM Permission	
+							WHERE userType IN (
+								SELECT userType 
+								FROM UserCat WHERE email = '" . $userEmail . "'
+							);";
+
+			$result = $GLOBALS['conn']->query($sql) or die($GLOBALS['conn']->error) ;
 
 			if($GLOBALS['conn']->error) {
 				echo $GLOBALS['conn']->error;
@@ -38,8 +30,15 @@
 					while($row = $result->fetch_assoc()) {
 						$this->permissions[$row["procName"]] = true;
 					}
+				} else {
+					$this->permissions = null;
 				}
 			}
+		}
+
+		// Pass in a stored procedure/function name to check if user has access -- get TRUE/FALSE
+		public function hasPerm($procedureName) {
+			return isset($this->permissions[$procedureName]);
 		}
 	}
 
@@ -52,16 +51,11 @@
 		private $pwd;	// hidden to outside classes and functions
 		public $pNum;
 
+		public $roles = array();
+
 		public function __construct($userEmail) {
 
-			// Cannot get this to work
-			/*
-			$sql = "SELECT * FROM Users WHERE email = '" . "?" . "';";
-			$result = $GLOBALS['conn']->prepare($sql);
-			$result->bind_param('s', $userEmail);
-			$result->execute();
-			*/
-
+			// Populate basic user information to member variables
 			$sql = "SELECT * FROM Users WHERE email = '" . $userEmail . "';";
 			$result = $GLOBALS['conn']->query($sql);
 
@@ -72,22 +66,43 @@
 					while($row = $result->fetch_assoc()) {
 						$this->fName = $row['fName'];
 						$this->lName = $row['lName'];
-						$this->userType = $row['userRoleID'];
 						$this->email = $row['email'];
 						$this->gender = $row['gender'];
 						$this->pwd = $row['pwd'];
 						$this->pNum = $row['pNum'];
  	   			}
+				} else {
+					echo 'NO user found';
 				}
 			}
-			//parent::__construct($this->userType);
+
+			// Populate the $roles array with all the roles a user has
+			$sql = "SELECT userType 
+							FROM UserCat WHERE email = '" . $userEmail . "';";
+
+			$result = $GLOBALS['conn']->query($sql) or die($GLOBALS['conn']->error) ;
+
+			if($GLOBALS['conn']->error) {
+				echo $GLOBALS['conn']->error;
+			} else {
+				if($result->num_rows > 0) {
+					while($row = $result->fetch_assoc()) {
+						$this->roles[$row['userType']] = TRUE;
+					}
+				} else {
+					$this->permissions = null;
+				}
+			}
+
+			// Get all the stored procedures/functions a user can access
+			Permission::__construct($this->email);
 		}
 
 		function userExist() {
 			if($this->email != null) {
 				return TRUE;
 			} else {
-				echo 'ljklasjdlkfj';
+				echo 'User does not exist';
 				return FALSE;
 			}
 		}
@@ -99,6 +114,7 @@
 			if($userPwd == $this->pwd) {
 				return TRUE;
 			} else {
+				echo 'Wrong Password';
 				return FALSE;
 			}
 		}

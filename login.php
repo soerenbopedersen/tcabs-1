@@ -3,7 +3,7 @@
 	session_start();	// initailize session variable
 
  	if (isset($_SESSION['logged_in'])) {
-  	header('Location: dashboard.php');
+  	//header('Location: dashboard.php');
   	exit();
 	} else {
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -28,11 +28,7 @@
 					$_SESSION['fName'] = $loginUser->fName;
 					$_SESSION['lName'] = $loginUser->lName;
 					$_SESSION['pNum'] = $loginUser->pNum;
-					$_SESSION['userType'] = $loginUser->userType;
-
-					//Retrive all the permissions of the uer logged in and redirect to dashboard.php
-			
-					//echo $loginUser->permissions->procName;
+					$_SESSION['roles'] = $loginUser->roles;
 
 					header("location: dashboard.php"); // login and redirect to main page
 				}
@@ -50,7 +46,7 @@
 		<title>Login</title>
 
 		<!-- Stylesheets -->
-    <?php include "stylesheet.php"; ?>
+    <?php include "styles/stylesheet.php"; ?>
   </head>
 
   <body>

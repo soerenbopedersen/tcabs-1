@@ -16,7 +16,7 @@
           <i class="fas fa-user-secret"></i> Admin
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="views/registerUser.php">Add Users</a>
+          <a class="dropdown-item" href="../forms/registerUser.php">Add Users</a>
           <a class="dropdown-item" href="#">Add Units</a>
           <a class="dropdown-item" href="#">Enrol Students</a>
         </div>

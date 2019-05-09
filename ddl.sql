@@ -4,6 +4,19 @@ CREATE DATABASE tcabs;
 
 USE tcabs;
 
+CREATE TABLE Users (
+	fName				VARCHAR(255)			, -- same here
+	lName				VARCHAR(255)			, -- same here
+	gender			VARCHAR(20),
+	pNum				VARCHAR(255),
+	email				VARCHAR(255)			NOT NULL,
+	pwd					VARCHAR(40)				NOT NULL,
+
+	PRIMARY KEY (email)
+);
+-- Alter Table Users
+-- Alter Users set Default null;
+
 CREATE TABLE UserRole (
 	userType		VARCHAR(50)				NOT NULL,
 
@@ -15,6 +28,7 @@ CREATE TABLE UserCat (
 	userType		VARCHAR(50)				NOT NULL,
 
 	PRIMARY KEY (email, userType),
+	FOREIGN KEY (email) REFERENCES Users (email),
 	FOREIGN KEY (userType) REFERENCES UserRole (userType)
 );
 
@@ -32,21 +46,6 @@ CREATE TABLE Permission (
 	FOREIGN KEY (userType) REFERENCES UserRole (userType),
 	FOREIGN KEY (procName) REFERENCES Functions (procName)
 );
-
-CREATE TABLE Users (
-	fName				VARCHAR(255)			, -- same here
-	lName				VARCHAR(255)			, -- same here
-	userType		VARCHAR(50)				NOT NULL, -- i don't think this has to be filled
-	gender			VARCHAR(20),
-	pNum				VARCHAR(255),
-	email				VARCHAR(255)			NOT NULL,
-	pwd					VARCHAR(40)				NOT NULL,
-
-	PRIMARY KEY (email),
-	FOREIGN KEY (userType) REFERENCES UserRole (userType)
-);
--- Alter Table Users
--- Alter Users set Default null;
 
 CREATE TABLE Unit (
 	unitCode		VARCHAR(10)				NOT NULL,
@@ -95,11 +94,14 @@ INSERT INTO tcabs.UserRole VALUES ("supervisor");
 INSERT INTO tcabs.UserRole VALUES ("student");
 INSERT INTO tcabs.UserRole VALUES ("nullUser");
 
-INSERT INTO tcabs.Users VALUES ("Daenerys", "Targaryen", "admin", "F", "0412323443", "dtargaryen@gmail.com", "motherofdragons");
-INSERT INTO tcabs.Users VALUES ("Tyrion", "Lannister", "supervisor", "M", "0412332543", "tlannister@gmail.com", "lannisteralwayspaysitsdebt");
-INSERT INTO tcabs.Users VALUES ("John", "Snow", "student", "M", "0412332243", "jsnow@gmail.com", "kingingthenorth");
-INSERT INTO tcabs.Users VALUES ("Robert", "Baratheon", "convenor", "M", "0412332263", "rbaratheon@gmail.com", "rulerofsevenkingdoms");
-INSERT INTO tcabs.Users VALUES ("Arya", "Stark", "admin", "F", "0412332263", "astark@gmail.com", "thereisonlyonegod");
+INSERT INTO tcabs.Users VALUES ("Daenerys", "Targaryen", "F", "0412323443", "dtargaryen@gmail.com", "motherofdragons");
+INSERT INTO tcabs.Users VALUES ("Tyrion", "Lannister", "M", "0412332543", "tlannister@gmail.com", "lannisteralwayspaysitsdebt");
+INSERT INTO tcabs.Users VALUES ("John", "Snow", "M", "0412332243", "jsnow@gmail.com", "kingingthenorth");
+INSERT INTO tcabs.Users VALUES ("Robert", "Baratheon", "M", "0412332263", "rbaratheon@gmail.com", "rulerofsevenkingdoms");
+INSERT INTO tcabs.Users VALUES ("Arya", "Stark", "F", "0412332263", "astark@gmail.com", "thereisonlyonegod");
+
+INSERT INTO tcabs.UserCat VALUES ("dtargaryen@gmail.com", "admin");
+INSERT INTO tcabs.UserCat VALUES ("dtargaryen@gmail.com", "convenor");
 
 INSERT INTO tcabs.Unit VALUES ("ICT30001", "Information Technology Project", "FSET");
 INSERT INTO tcabs.Unit VALUES ("INF30011", "Database Implementation", "FSET");
@@ -116,10 +118,15 @@ INSERT INTO tcabs.UnitOffering VALUES (1, "ICT30001", "rbaratheon@gmail.com", "S
 
 INSERT INTO tcabs.Enrolment VALUES (1, 1, "dtargaryen@gmail.com");
 
-INSERT INTO tcabs.Functions VALUES (1, "TCABSUSERCreateNewUser");
+INSERT INTO tcabs.Functions VALUES ("TCABSUSERCreateNewUser");
+INSERT INTO tcabs.Functions VALUES ("AnyProcNameForConvenor1");
+INSERT INTO tcabs.Functions VALUES ("AnyProcNameForConvenor2");
 
 INSERT INTO tcabs.Permission VALUES ("admin", "TCABSUSERCreateNewUser");
+INSERT INTO tcabs.Permission VALUES ("convenor", "AnyProcNameForConvenor1");
+INSERT INTO tcabs.Permission VALUES ("convenor", "AnyProcNameForConvenor2");
 
+/*
 delimiter $$
 create PROCEDURE TCABSAuthenticateEmail(in Email varchar (255))
 BEGIN
@@ -355,4 +362,4 @@ INSERT INTO tcabs.UnitOffering VALUES (1, 1, 4, "Semester 2", "2018", "31 March 
 */
 
 select * from Users;
-select * from teachingperiod;
+select * from TeachingPeriod;
