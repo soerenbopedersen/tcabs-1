@@ -43,7 +43,7 @@ CREATE TABLE Users (
 	pwd					VARCHAR(40)				NOT NULL,
 
 	PRIMARY KEY (email),
-	FOREIGN KEY (userRoleID) REFERENCES UserRole (userRoleID)
+	FOREIGN KEY (userType) REFERENCES UserRole (userType)
 );
 -- Alter Table Users
 -- Alter Users set Default null;
@@ -93,6 +93,7 @@ INSERT INTO tcabs.UserRole VALUES ("admin");
 INSERT INTO tcabs.UserRole VALUES ("convenor");
 INSERT INTO tcabs.UserRole VALUES ("supervisor");
 INSERT INTO tcabs.UserRole VALUES ("student");
+INSERT INTO tcabs.UserRole VALUES ("nullUser");
 
 INSERT INTO tcabs.Users VALUES ("Daenerys", "Targaryen", "admin", "F", "0412323443", "dtargaryen@gmail.com", "motherofdragons");
 INSERT INTO tcabs.Users VALUES ("Tyrion", "Lannister", "supervisor", "M", "0412332543", "tlannister@gmail.com", "lannisteralwayspaysitsdebt");
