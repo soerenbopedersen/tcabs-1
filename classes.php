@@ -7,7 +7,7 @@
 	class Permission {
 		public $permissions;
 
-		public function __construct($userRoleID) {
+		public function __construct($userEmail) {
 			$this->permissions = array();
 
 			//$sql = "SELECT procName FROM Functions AS F 
@@ -22,6 +22,7 @@
 			$sql = "SELECT procName FROM Functions AS F 
 							INNER JOIN Permission AS P ON F.functionID = P.functionID
 							INNER JOIN UserRole AS UR ON P.userRoleID = UR.userRoleID  
+							INNER JOIN  AS UR ON P.userRoleID = UR.userRoleID  
 							WHERE P.userRoleID = '" . $userRoleID . "';";
 
 			$result = $GLOBALS['conn']->query($sql);
@@ -91,7 +92,7 @@
 			parent::__construct($this->userRoleID);
 		}
 
-		public static function userExist() {
+		public function userExist() {
 			//$sql = "SELECT email FROM Users WHERE email = '" . $userEmail . "';";
 			//$result = $GLOBALS['conn']->query($sql);
 
@@ -112,7 +113,7 @@
 			}
 		}
 
-		public static function checkPwd($userPwd) {
+		public function checkPwd($userPwd) {
 			//$user = new User();
 			//$user = $user::getUser($userEmail);
 

@@ -2,54 +2,58 @@
 DROP DATABASE tcabs;
 CREATE DATABASE tcabs;
 
-use tcabs;
+USE tcabs;
+
 CREATE TABLE UserRole (
-	userRoleID					INT				AUTO_INCREMENT,
 	userType		VARCHAR(50)				NOT NULL,
 
-	PRIMARY KEY (userRoleID)
+	PRIMARY KEY (userType)
+);
+
+CREATE TABLE UserCat (
+	email				VARCHAR(50)				NOT NULL,
+	userType		VARCHAR(50)				NOT NULL,
+
+	PRIMARY KEY (email, userType),
+	FOREIGN KEY (userType) REFERENCES UserRole (userType)
 );
 
 CREATE TABLE Functions (
-	functionID			INT						AUTO_INCREMENT,
 	procName		VARCHAR(50)				NOT NULL,
 
-	PRIMARY KEY (functionID)
+	PRIMARY KEY (procName)
 );
 
 CREATE TABLE Permission (
-	permissionID				INT				AUTO_INCREMENT,
-	userRoleID					INT				NOT NULL,
-	functionID					INT				NOT NULL,
+	userType		VARCHAR(50)				NOT NULL,
+	procName						INT				NOT NULL,
 
-	PRIMARY KEY (permissionID),
-	FOREIGN KEY (userRoleID) REFERENCES UserRole (userRoleID),
-	FOREIGN KEY (functionID) REFERENCES Functions (functionID)
+	PRIMARY KEY (userType, procName),
+	FOREIGN KEY (userType) REFERENCES UserRole (userType),
+	FOREIGN KEY (procName) REFERENCES Functions (procName)
 );
 
 CREATE TABLE Users (
-	userID							INT				AUTO_INCREMENT,
 	fName				VARCHAR(255)			, -- same here
 	lName				VARCHAR(255)			, -- same here
-	userRoleID					INT				, -- i don't think this has to be filled
+	userType		VARCHAR(50)				NOT NULL, -- i don't think this has to be filled
 	gender			VARCHAR(20),
 	pNum				VARCHAR(255),
 	email				VARCHAR(255)			NOT NULL,
 	pwd					VARCHAR(40)				NOT NULL,
 
-	PRIMARY KEY (userID),
+	PRIMARY KEY (email),
 	FOREIGN KEY (userRoleID) REFERENCES UserRole (userRoleID)
 );
 -- Alter Table Users
 -- Alter Users set Default null;
 
 CREATE TABLE Unit (
-	unitID							INT				AUTO_INCREMENT,
 	unitCode		VARCHAR(10)				NOT NULL,
 	unitName		VARCHAR(100)			NOT NULL,
 	faculty			VARCHAR(255)				,
 
-	PRIMARY KEY (unitID)
+	PRIMARY KEY (unitCode)
 );
 
 CREATE TABLE TeachingPeriod (
@@ -61,25 +65,25 @@ CREATE TABLE TeachingPeriod (
 
 CREATE TABLE UnitOffering (
 	unitOfferingID			INT				AUTO_INCREMENT,
-	unitID							INT				NOT NULL,
-	convenorID					INT				, -- i don't think this need to be filled
+	unitCode		VARCHAR(10)				NOT NULL,
+	cUserName		VARCHAR(255)			, -- i don't think this need to be filled
 	term				VARCHAR(10)				NOT NULL,
 	year				VARCHAR(10)				NOT NULL,
 	censusDate	VARCHAR(20)				, -- i don't think this needs to be filled
 
 	PRIMARY KEY (unitOfferingID),
-	FOREIGN KEY (unitID) REFERENCES Unit(unitID),
-	FOREIGN KEY (convenorID) REFERENCES Users(userID),
+	FOREIGN KEY (unitCode) REFERENCES Unit(unitCode),
+	FOREIGN KEY (cUserName) REFERENCES Users(email),
 	FOREIGN KEY (term, year) REFERENCES TeachingPeriod(term, year)
 );
 
 CREATE TABLE Enrolment (
 	enrolmentID					INT				AUTO_INCREMENT,
-	studentID						INT				NOT NULL,
 	unitOfferingID			INT				NOT NULL,
+	sUserName		VARCHAR(255)			NOT NULL,
 
 	PRIMARY KEY (enrolmentID),
-	FOREIGN KEY (studentID) REFERENCES Users(userID),
+	FOREIGN KEY (sUserName) REFERENCES Users(email),
 	FOREIGN KEY (unitOfferingID) REFERENCES UnitOffering(unitOfferingID)
 );
 

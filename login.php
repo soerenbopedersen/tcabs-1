@@ -16,7 +16,7 @@
 			$loginUser = new User($_POST['email']);
 
 			if(!$loginUser::userExist()) {
-				//header("location: login.php");
+				header("location: login.php");
 			} else {
 				//$salt = "tcabs";
 				//$pwdHash = sha1($_POST['pwd'].$salt);
@@ -33,7 +33,7 @@
 					$_SESSION['lName'] = $loginUser->lName;
 					$_SESSION['userID'] = $loginUser->userID;
 
-					echo $_SESSION['fName'];
+					echo $_SESSION['fName']
 					//Retrive all the permissions of the uer logged in and redirect to dashboard.php
 			
 						//echo $loginUser->permissions->procName;
