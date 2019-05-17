@@ -1,6 +1,8 @@
 <?php
 
-session_start();
+	require_once("classes.php");
+	session_start();
+
 	if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['logged_in'] = FALSE;	
 		header("location: login.php");
@@ -23,21 +25,29 @@ session_start();
   <body class="loggedin">
 	
 		<div class="content">
-			<h2>Welcome, <?php echo $_SESSION['fName'] . " " .  $_SESSION['lName']; ?></h2>
+			<h2>Welcome, <?php echo "{$_SESSION['loggedUser']->fName}"; ?></h2>
 			<div>
 				<p>Your account details are below:</p>
 				<table>
 				<tr>
 						<td>Name:</td>
-						<td><?php echo $_SESSION['fName'] . " " .  $_SESSION['lName']; ?></td>
+						<td><?php echo "{$_SESSION['loggedUser']->fName} {$_SESSION['loggedUser']->lName}"; ?></td>
 					</tr>
 					<tr>
-						<td>Username:</td>
-						<td><?php echo $_SESSION['email']?></td>
+						<td>Registered Email:</td>
+						<td><?php echo "{$_SESSION['loggedUser']->email}"?></td>
 					</tr>
+					<tr>
 					<tr>
 						<td>Phone Number:</td>
-						<td><?php echo $_SESSION['pNum']?></td>
+						<td><?php echo "{$_SESSION['loggedUser']->pNum}"?></td>
+					</tr>
+					<tr>
+						<td>Gender</td>
+						<td><?php echo "{$_SESSION['loggedUser']->gender}"?></td>
+					</tr>
+						<td>Access Levels:</td>
+						<!--<td><?php# echo "{$_SESSION['loggedUser']->pNum}"?></td>
 					</tr>
 				</table>
 			</div>

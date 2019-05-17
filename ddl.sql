@@ -73,17 +73,16 @@ CREATE TABLE TeachingPeriod (
 	term			VARCHAR(10)				NOT NULL,
 	year			VARCHAR(10)				NOT NULL,
 	StartDate		date					NOT Null,
-    EndDate			date					NOT Null,
+	EndDate			date					NOT Null,
 	PRIMARY KEY (term, year)
 );
 
 CREATE TABLE UnitOffering (
 	unitOfferingID			INT				AUTO_INCREMENT,
 	unitCode		VARCHAR(10)				NOT NULL,
-    cUserName		VARCHAR(255),
+	cUserName		VARCHAR(255),
 	term				VARCHAR(10)				NOT NULL,
 	year				VARCHAR(10)				NOT NULL,
-    
 	censusDate	Date				, -- i don't think this needs to be filled
 
 	PRIMARY KEY (unitOfferingID),
@@ -91,14 +90,14 @@ CREATE TABLE UnitOffering (
 	FOREIGN KEY (term, year) REFERENCES TeachingPeriod(term, year)
 );
 
-Create table OfferingProject (
+CREATE TABLE OfferingProject (
 	OfferingProjectID			INT				AUTO_INCREMENT,
-    UnitOfferingID				int				Not null,
-    ProjectName					VARCHAR(255)				Not null,
+	UnitOfferingID				int				Not null,
+	ProjectName					VARCHAR(255)				Not null,
     
-    primary key(OfferingProjectID),
-    FOREIGN KEY (UnitOfferingID) REFERENCES UnitOffering(UnitOfferingID),
-    FOREIGN KEY (ProjectName) REFERENCES Project(ProjectName)
+	primary key(OfferingProjectID),
+	FOREIGN KEY (UnitOfferingID) REFERENCES UnitOffering(UnitOfferingID),
+	FOREIGN KEY (ProjectName) REFERENCES Project(ProjectName)
 );
 
 
@@ -125,22 +124,21 @@ Create Table Team (
 	TeamID							INT				AUTO_INCREMENT,
 	TeamName						Varchar(255) 	not null,
 	OfferingStaffID					int				Not Null,
-    ProjectManager					Varchar(255),
+	ProjectManager					Varchar(255),
 
 	PRIMARY KEY (TeamID),
 	FOREIGN KEY (OfferingStaffID) REFERENCES OfferingStaff(OfferingStaffID)
-    
 );
 
 Create Table TeamProjects(
 	TeamProjectID					int				auto_increment,
-    TeamID							int				not null,
-    ProjectName						Varchar(255)		not null,
-    Budget							double(6,2),
+	TeamID							int				not null,
+	ProjectName						Varchar(255)		not null,
+	Budget							double(6,2),
     
-    Primary key (TeamProjectID),
-    foreign key (TeamID)	references Team(TeamID),
-    FOREIGN KEY (ProjectName) REFERENCES Project(ProjectName)
+	Primary key (TeamProjectID),
+		foreign key (TeamID)	references Team(TeamID),
+		FOREIGN KEY (ProjectName) REFERENCES Project(ProjectName)
 );
 
 Create Table TeamMember (
@@ -149,28 +147,27 @@ Create Table TeamMember (
 	TeamID							INT				NOT NULL,
 
 	PRIMARY KEY (TeamMemberID),
-	FOREIGN KEY (TeamID) REFERENCES Team(TeamID),
-	FOREIGN KEY (EnrolmentID) REFERENCES Enrolment(enrolmentID)
+		FOREIGN KEY (TeamID) REFERENCES Team(TeamID),
+		FOREIGN KEY (EnrolmentID) REFERENCES Enrolment(enrolmentID)
 );
 
 Create Table ProjectRole (
 	Rolename						varchar(255) 			Not Null,
-    Salary							double(6,2)			Not Null,
-    RoleDescription					text,
+	Salary							double(6,2)			Not Null,
+	RoleDescription					text,
     
-    Primary Key (Rolename)
+	Primary Key (Rolename)
 );
 
 Create Table Task (
-	
-    ProjectTaskID					int 			not null,			
-    TeamMemberID					int				not null,
-    TeamProjectID					int				not Null,
-    Rolename						varchar(255)	not null,
-    TaskDetails						text			not null,
-    TimeTaken						int				not null,
-    logged							boolean			DEFAULT false,
-    Altered							boolean			DEFAULT false,
+	ProjectTaskID					int 			not null,			
+	TeamMemberID					int				not null,
+	TeamProjectID					int				not Null,
+	Rolename						varchar(255)	not null,
+	TaskDetails						text			not null,
+	TimeTaken						int				not null,
+	logged							boolean			DEFAULT false,
+	Altered							boolean			DEFAULT false,
 
 	Primary Key (ProjectTaskID,TeamProjectID),
     Foreign Key (TeamMemberID) REFERENCES TeamMember(TeamMemberID),
@@ -235,11 +232,10 @@ INSERT INTO tcabs.UserRole VALUES ("supervisor");
 INSERT INTO tcabs.UserRole VALUES ("student");
 INSERT INTO tcabs.UserRole VALUES ("nullUser");
 
-INSERT INTO tcabs.Users VALUES ("Daenerys", "Targaryen", "F", "0412323443", "dtargaryen@gmail.com", "motherofdragons");
-INSERT INTO tcabs.Users VALUES ("Tyrion", "Lannister", "M", "0412332543", "tlannister@gmail.com", "lannisteralwayspaysitsdebt");
-INSERT INTO tcabs.Users VALUES ("John", "Snow", "M", "0412332243", "jsnow@gmail.com", "kingingthenorth");
-INSERT INTO tcabs.Users VALUES ("Robert", "Baratheon", "M", "0412332263", "rbaratheon@gmail.com", "rulerofsevenkingdoms");
-INSERT INTO tcabs.Users VALUES ("Arya", "Stark", "F", "0412332263", "astark@gmail.com", "thereisonlyonegod");
+INSERT INTO tcabs.Users VALUES ("Daenerys", "Targaryen", "F", "041-232-3443", "dtargaryen@gmail.com", "5753dca0b5c2ed36a457d3beb5ed75ce9d1d2c8c"); -- pwd motherofdragons
+INSERT INTO tcabs.Users VALUES ("John", "Snow", "M", "041-233-2243", "jsnow@gmail.com", "45ee86bd96a5d5c8a34be537fa6d7703767da270"); -- pwd kinginthenorth
+INSERT INTO tcabs.Users VALUES ("Robert", "Baratheon", "M", "041-233-2263", "rbaratheon@gmail.com", "80f3008f6a58f3745d2e1fd1a674b239314274a0"); -- rulerofsevenkingdoms
+INSERT INTO tcabs.Users VALUES ("Arya", "Stark", "F", "041-233-2263", "astark@gmail.com", "7a3a83e08bd6db9ee1bebaf18e2065597150e39d"); -- pwd thereisonlyonegod
 
 INSERT INTO tcabs.Unit VALUES ("ICT30001", "Information Technology Project", "FSET");
 INSERT INTO tcabs.Unit VALUES ("INF30011", "Database Implementation", "FSET");
@@ -252,6 +248,8 @@ INSERT INTO tcabs.TeachingPeriod VALUES ("Semester 2", "2018", STR_TO_DATE("2019
 INSERT INTO tcabs.TeachingPeriod VALUES ("Winter", "2018", STR_TO_DATE("2019-5-3", '%Y-%m-%d') , STR_TO_DATE("2019-8-1", '%Y-%m-%d'));
 INSERT INTO tcabs.TeachingPeriod VALUES ("Summer", "2018", STR_TO_DATE("2019-5-3", '%Y-%m-%d') , STR_TO_DATE("2019-8-1", '%Y-%m-%d'));
 
+INSERT INTO tcabs.UserCat VALUES ("dtargaryen@gmail.com", "admin");
+INSERT INTO tcabs.UserCat VALUES ("dtargaryen@gmail.com", "convenor");
 
 /*
 INSERT INTO tcabs.UnitOffering VALUES (1, "ICT30001", "rbaratheon@gmail.com", "Semester 2", "2018", "31 March 2018");
@@ -259,9 +257,9 @@ INSERT INTO tcabs.UnitOffering VALUES (1, "ICT30001", "rbaratheon@gmail.com", "S
 INSERT INTO tcabs.Enrolment VALUES (1, 1, "dtargaryen@gmail.com");
 
 INSERT INTO tcabs.Functions VALUES (1, "TCABSUSERCreateNewUser");
-
-INSERT INTO tcabs.Permission VALUES ("admin", "TCABSUSERCreateNewUser");
 */
+
+
 delimiter $$
 create PROCEDURE TCABSAuthenticateEmail(in Email varchar (255))
 BEGIN
@@ -283,7 +281,7 @@ BEGIN
 END$$
  delimiter;
 
- DELIMITER //
+DELIMITER //
 create PROCEDURE TCABSUSERCreateNewUser(in Newemail varchar(225), in newpassword varchar(225))
 	BEGIN
 		if (select count(*) from tcabs.Users where email = Newemail) = 0 then 
@@ -291,7 +289,7 @@ create PROCEDURE TCABSUSERCreateNewUser(in Newemail varchar(225), in newpassword
 			if (char_length(newpassword) <=3) then
 				SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Password is too short';
 			end if;
-            insert into tcabs.Users(email,pwd) values (newemail,newpassword);
+				insert into tcabs.Users(email,pwd) values (newemail,newpassword);
 		else
 -- call raise_application_error(1234, 'msg');
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'This email already exists';
@@ -382,32 +380,48 @@ create PROCEDURE TCABSUSERSetUserPhone(in UserEmail Varchar(255), in NewPhone Va
 	END //
  DELIMITER ;
  
-    DELIMITER //
+DELIMITER //
 create PROCEDURE TCABSValidUserPhonenumber( in NewPhone Varchar(255) )
 	BEGIN
 		if (NewPhone not REGEXP '[0-9]{3}-[0-9]{3}-[0-9]{4}') then
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "phone number must be numbers in ###-###-#### format";
         end if;
 	END //
- DELIMITER ;
+DELIMITER;
 
+DELIMITER //
+CREATE PROCEDURE TCABS_User_register(IN fName VARCHAR(255), IN lName VARCHAR(255), IN gender VARCHAR(20), IN pNum VARCHAR(255), IN email VARCHAR(255), IN pwd VARCHAR(40)) 
+	BEGIN
+		CALL tcabs.TCABSUSERCreateNewUser(email , pwd);
+		CALL tcabs.TCABSUSERSetUserFirstName(email, fName);
+		CALL tcabs.TCABSUSERSetUserLastName(email, lName);
+		CALL tcabs.TCABSUSERSetUserGender(email, gender);
+		CALL tcabs.TCABSUSERSetUserPhone(email, pNum);
+	END// 
+DELIMITER ;
+
+/*
 -- adding user actions. You should initalize with TCABSCreatNewUser if you are creating a new user
 -- Create new user sets user Email (identification) and user Password
-call tcabs.TCABSUSERCreateNewUser("Example@hotmail.com" , 12345);
--- Set User firstname updates users first name from what it was before to new name via the Email identifier
-call tcabs.TCABSUSERSetUserFirstName("Example@hotmail.com" , "Billy");
--- Set User Lastname updates users Last name from what it was before to new name via the Email identifier
-call tcabs.TCABSUSERSetUserLastName("Example@hotmail.com" , "Bobington");
--- Set User Gender updates users Gender from what it was before to new name via the Email identifier currently there is minimal checks for feild
-call tcabs.TCABSUSERSetUserGender("Example@hotmail.com" , "Male");
--- set User Phone updates their phone number from what it was before to new name via the Email identifier. The phone number must follow ###-###-#### pattern
-call tcabs.TCABSUSERSetUserPhone("Example@hotmail.com" , "041-144-7897");
+-- call tcabs.TCABSUSERCreateNewUser("Example@hotmail.com" , 12345);
 
-call tcabs.TCABSUSERCreateNewUser("BestExample@hotmail.com" , 12345);
-call tcabs.TCABSUSERCreateNewUser("Best@Supervisor.com" , 12223);
+-- Set User firstname updates users first name from what it was before to new name via the Email identifier
+--call tcabs.TCABSUSERSetUserFirstName("Example@hotmail.com" , "Billy");
+
+-- Set User Lastname updates users Last name from what it was before to new name via the Email identifier
+--call tcabs.TCABSUSERSetUserLastName("Example@hotmail.com" , "Bobington");
+
+-- Set User Gender updates users Gender from what it was before to new name via the Email identifier currently there is minimal checks for feild
+--call tcabs.TCABSUSERSetUserGender("Example@hotmail.com" , "Male");
+
+-- set User Phone updates their phone number from what it was before to new name via the Email identifier. The phone number must follow ###-###-#### pattern
+--call tcabs.TCABSUSERSetUserPhone("Example@hotmail.com" , "041-144-7897");
+
+--call tcabs.TCABSUSERCreateNewUser("BestExample@hotmail.com" , 12345);
+--call tcabs.TCABSUSERCreateNewUser("Best@Supervisor.com" , 12223);
  
  
-    DELIMITER //
+DELIMITER //
 create PROCEDURE TCABSUNITAddnewunit( in NewUnitcode varchar(10), in NewUnitname varchar(100))
 	BEGIN
 		Declare Errormsg varchar(255) default "no Unit code entered";
@@ -1016,7 +1030,7 @@ create Procedure TCABSTEAMMEMBERAddTeamMember(in StudentEmail varchar(255),in Te
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "you can not add a team member to a unit which has already concluded";
         end if;
         */
-        
+ /*       
         call TCABSENROLMENTGetEnrolKey(StudentEmail,SelectedUnitCode, SelectedOfferingterm, SelectedOfferingyear, @ValueEnrolID);
         
         call TCABSTeamGetTeamKey(Teamname,SupervisorEmail,SelectedUnitCode, SelectedOfferingterm, SelectedOfferingyear, @ValuesTeamID);
@@ -1512,6 +1526,7 @@ Create Table PeerAssessmentFeild (
 insert into Functions(procName) SELECT Routine_Name FROM INFORMATION_SCHEMA.ROUTINES where Routine_Schema like '%TCABS%';
 
 
+INSERT INTO tcabs.Permission VALUES ("admin", "TCABS_User_register");
 -- TCABS Permissions
 -- assigns a Role to a Permission 
-call TCABSPERMISSIONAddPermission("testerRole", "TCABSauthenticateEmail");
+-- call TCABSPERMISSIONAddPermission("testerRole", "TCABSauthenticateEmail");

@@ -1,12 +1,15 @@
 <!-- The main page of the system will show relevant functionality according to user role -->
 <?php
+	require_once("classes.php");
 	session_start();
 
 	if(!isset($_SESSION['logged_in'])) {
 		header("location: /tcabs/login.php");
 	}
 
-	/*
+	//$_SESSION['loggedUser']->checkRoles($_SESSION['loggedUser']->email);
+	
+	/* not relevant now
 	if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['logged_in'] = FALSE;	
 		header("location: login.php");
@@ -34,7 +37,7 @@
 		<?php include "views/header.php"; ?>
   
 		<div class="content">
-			<h2>Welcome, <?php echo $_SESSION['fName']?></h2><h2-date><?php echo date('d F, Y (l)'); ?></h2-date><br>
+			<h2>Welcome, <?php echo $_SESSION['loggedUser']->fName?></h2><h2-date><?php echo date('d F, Y (l)'); ?></h2-date><br>
 			<div>
 				<p> Here </p>
 			</div>

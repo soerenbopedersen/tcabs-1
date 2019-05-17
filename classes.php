@@ -2,24 +2,18 @@
 	// Define different classes with relevant and useful functions here
 	require("db-conn.php");	// connect to database
 
-	class Permission {
-		public $permissions;
+	class Role {
+		protected $roles;
 
-		protected function __construct($userEmail) {
-			$this->permissions = array();
+		protected function __construct() {
+			$this->roles = array();
+		}
 
-			// might need to use sub queries in the future
-			//$sql = "SELECT procName FROM Permission AS P 
-			//				INNER JOIN UserRole AS UR ON P.userType = UR.userType  
-			//				INNER JOIN UserCat AS UC ON UR.userType = UC.userType  
-			//				WHERE P.userType = '" . $userType . "';";
+		protected function getRoles($userEmail) {
 
-			// using subquery
-			$sql = "SELECT procName FROM Permission	
-							WHERE userType IN (
-								SELECT userType 
-								FROM UserCat WHERE email = '" . $userEmail . "'
-							);";
+			// Populate the $roles array with all the roles a user has
+			$sql = "SELECT userType 
+							FROM UserCat WHERE email = '{$userEmail}'";
 
 			$result = $GLOBALS['conn']->query($sql) or die($GLOBALS['conn']->error) ;
 
@@ -28,10 +22,54 @@
 			} else {
 				if($result->num_rows > 0) {
 					while($row = $result->fetch_assoc()) {
-						$this->permissions[$row["procName"]] = true;
+						$this->roles[$row['userType']] = TRUE;
 					}
 				} else {
-					$this->permissions = null;
+					$this->roles = null;
+				}
+			}
+		}
+
+	}
+
+	class Permission extends Role{
+		protected $permissions;
+
+		protected function __construct() {
+			Role::__construct();
+			$this->permissions = array();
+		}
+		
+		protected function getPerms($userEmail) {
+
+			$roleObj = new Role;
+			$roleObj->getRoles($userEmail);
+
+			if($roleObj->roles == NULL) {
+				echo "No roles assigned"; 
+			} else {
+				$subQuery = "";
+				foreach($roleObj->roles as $userType => $access) {
+					$subQuery = $subQuery . "'{$userType}', "; 
+				}
+				$subQuery = substr($subQuery, 0, -2);
+
+				// using subquery
+				$sql = "SELECT procName FROM Permission	
+								WHERE userType IN ({$subQuery});";
+	
+				$result = $GLOBALS['conn']->query($sql) or die($GLOBALS['conn']->error) ;
+	
+				if($GLOBALS['conn']->error) {
+					echo $GLOBALS['conn']->error;
+				} else {
+					if($result->num_rows > 0) {
+						while($row = $result->fetch_assoc()) {
+							$this->permissions[$row["procName"]] = true;
+						}
+					} else {
+						$this->permissions = null;
+					}
 				}
 			}
 		}
@@ -42,20 +80,39 @@
 		}
 	}
 
-	class User extends Permission{
+	class User extends Permission {
 		public $fName;
 		public $lName;
-		public $userType;
-		public $email;
 		public $gender;
-		private $pwd;	// hidden to outside classes and functions
 		public $pNum;
+		public $email;
+		private $pwd;	// hidden to outside classes and functions
 
-		public $roles = array();
+		public function __construct() {
+			Permission::__construct();
+		}
 
-		public function __construct($userEmail) {
+		public function userExist() {
+			if($this->email != null) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		}
 
-			// Populate basic user information to member variables
+		public function checkPwd($userPwd) {
+			// encrypt
+			$userPwd = sha1($userPwd);
+
+			if($userPwd == $this->pwd) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		}
+		public function getUser($userEmail) {
+
+			// Populate basic user information into member variables
 			$sql = "SELECT * FROM Users WHERE email = '" . $userEmail . "';";
 			$result = $GLOBALS['conn']->query($sql);
 
@@ -72,50 +129,43 @@
 						$this->pNum = $row['pNum'];
  	   			}
 				} else {
-					echo 'NO user found';
-				}
-			}
-
-			// Populate the $roles array with all the roles a user has
-			$sql = "SELECT userType 
-							FROM UserCat WHERE email = '" . $userEmail . "';";
-
-			$result = $GLOBALS['conn']->query($sql) or die($GLOBALS['conn']->error) ;
-
-			if($GLOBALS['conn']->error) {
-				echo $GLOBALS['conn']->error;
-			} else {
-				if($result->num_rows > 0) {
-					while($row = $result->fetch_assoc()) {
-						$this->roles[$row['userType']] = TRUE;
-					}
-				} else {
-					$this->permissions = null;
+					return NULL;
+					exit(1);
 				}
 			}
 
 			// Get all the stored procedures/functions a user can access
-			Permission::__construct($this->email);
+			Permission::getPerms($this->email);
 		}
 
-		function userExist() {
-			if($this->email != null) {
-				return TRUE;
-			} else {
-				echo 'User does not exist';
-				return FALSE;
+		public function checkRoles($userEmail) {
+			
+			// get user roles
+			$roleObj = new Role;
+			$roleObj->getRoles($userEmail);
+
+			foreach($roleObj->roles as $userType => $value) {
+				echo "{$userType} : {$value}";
+				echo "<br/>";
 			}
+
 		}
 
-		public function checkPwd($userPwd) {
-			// $salt = "tcabs";
-			//$password_encrypted = sha1($_POST['pwd']);
+		public function registerUser($fName, $lName, $gender, $pNum, $email, $pwd) {
 
-			if($userPwd == $this->pwd) {
-				return TRUE;
-			} else {
-				echo 'Wrong Password';
-				return FALSE;
+			// convert pNum to ###-###-####
+			// will only work on 10-digit number without country code
+			$pNum = sprintf("%s-%s-%s", substr($pNum, 0, 3), substr($pNum, 3, 3), substr($pNum, 6, 4));
+
+			// encrypt password
+			$pwd = sha1($pwd);
+
+			$sql = "call TCABS_User_register('{$fName}', '{$lName}', '{$gender}', '{$pNum}', '{$email}', '{$pwd}')";
+
+			try {
+				$result = $GLOBALS['conn']->query($sql);
+			} catch(Exception $e) {
+				echo "<script type='text/javascript'>alert('{$e->error}');</script>";
 			}
 		}
 	}

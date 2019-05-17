@@ -1,34 +1,28 @@
 <!-- Login page for users -->
 <?php 
+	require_once('classes.php');
 	session_start();	// initailize session variable
 
  	if (isset($_SESSION['logged_in'])) {
-  	//header('Location: dashboard.php');
+  	header('Location: dashboard.php');
   	exit();
 	} else {
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 			// User login process check if email and password exists and is correct
-			require_once('classes.php');
-
-			$loginUser = new User($_POST['email']);
+			$loginUser = new User;
+			$loginUser->getUser($_POST['email']);
 
 			if(!$loginUser->userExist()) {
-				header("location: login.php");
+				echo "<script type='text/javascript'>alert('User does not exist');</script>";
 			} else {
-				//$salt = "tcabs";
-				//$pwdHash = sha1($_POST['pwd'].$salt);
 
 				if(!$loginUser->checkPwd($_POST['pwd'])) {
-					header("location: login.php");
+					echo "<script type='text/javascript'>alert('Wrong Password');</script>";
 				} else {
-					$_SESSION['logged_in'] = TRUE;	// to be checked before displaying dashboard
 
-					$_SESSION['email'] = $loginUser->email;
-					$_SESSION['fName'] = $loginUser->fName;
-					$_SESSION['lName'] = $loginUser->lName;
-					$_SESSION['pNum'] = $loginUser->pNum;
-					$_SESSION['roles'] = $loginUser->roles;
+					$_SESSION['logged_in'] = TRUE;	// to be checked before displaying dashboard
+					$_SESSION['loggedUser'] = $loginUser;
 
 					header("location: dashboard.php"); // login and redirect to main page
 				}
