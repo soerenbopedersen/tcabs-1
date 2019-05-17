@@ -19,11 +19,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 		<!-- Stylesheets -->
-		<?php include "stylesheet.php"; ?>
+		<?php include "../styles/stylesheet.php"; ?>
   </head>
 
   <body class="loggedin">
-		<?php include "views/header.php"; ?>
+		<?php include "../views/header.php"; ?>
 		<div class="content">
 			<h2>Register User</h2><h2-date><?php echo date('d F, Y (l)'); ?></h2-date><br>
 		<div>
@@ -59,5 +59,5 @@
   		<button class="btn btn-info my-4 btn-block" type="submit">Register</button>
 		</form>
 	</body>
-  <?php include "views/footer.php";  ?>  
+  <?php include "../views/footer.php";  ?>  
 </html>

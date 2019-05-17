@@ -6,23 +6,23 @@
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="dashboard.php">Home </a>
+			<a class="nav-link" href="/tcabs/dashboard.php">Home </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="profile.php">Profile</a>
+				<a class="nav-link" href="/tcabs/profile.php">Profile</a>
       </li>
 	  	<li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-user-secret"></i> Admin
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="../forms/registerUser.php">Add Users</a>
-          <a class="dropdown-item" href="#">Add Units</a>
-          <a class="dropdown-item" href="#">Enrol Students</a>
+					<a class="dropdown-item" href="/tcabs/forms/registerUser.php">Add Users</a>
+          <a class="dropdown-item" href="/tcabs/forms/#">Add Units</a>
+          <a class="dropdown-item" href="/tcabs/forms/#">Enrol Students</a>
         </div>
       </li>
 	  	<li class="nav-item">
-        <a class="nav-link" href="logout.php">Logout</a>
+				<a class="nav-link" href="/tcabs/logout.php">Logout</a>
       </li>
     </ul>
     <?php echo date(' (l) d F Y h:ia'); ?>

@@ -2,6 +2,11 @@
 <?php
 	session_start();
 
+	if(!isset($_SESSION['logged_in'])) {
+		header("location: /tcabs/login.php");
+	}
+
+	/*
 	if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['logged_in'] = FALSE;	
 		header("location: login.php");
@@ -11,6 +16,7 @@
 			//require("signup.php");
 		}
 	}
+	 */
 ?>
 
 <!DOCTYPE html>
