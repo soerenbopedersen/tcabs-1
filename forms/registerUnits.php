@@ -7,6 +7,15 @@
 	} else {
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+			mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+			$unitObj = new Unit;
+
+			try {
+				$unitObj->registerUnit($_POST['unitCode'], $_POST['unitName'], $_POST['unitFaculty']);
+			} catch(mysqli_sql_exception $e) {
+				echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
+			}
 		}
 	}
 ?>

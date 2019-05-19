@@ -158,18 +158,23 @@
 	}
 
 	class Unit {
-		private unitCode;
-		private unitName;
-		private unitFaculty;
+		private $unitCode;
+		private $unitName;
+		private $unitFaculty;
 
 		public function registerUnit($uCode, $uName, $uFaculty) {
-			$sql = "call TCABS_Unit_register($uCode, $uName, $uFaculty)";
+
+			$stmt = $GLOBALS['conn']->prepare("call TCABS_Unit_register(?, ?, ?)");
+			$stmt->bind_param("sss", $uCode, $uName, $uFaculty);
 
 			try {
-				$result = $GLOBALS['conn']->query($sql);
-			} catch(Exception $e) {
-				echo "<script type='text/javascript'>alert('{$e->error}');</script>";
+				$stmt->execute();
+				echo "<script type='text/javascript'>alert('Unit added successfully!');</script>";
+			} catch(mysqli_sql_exception $e) {
+				throw $e;
 			}
+
+			$stmt->close();
 		}
 	}
 ?>

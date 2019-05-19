@@ -426,8 +426,8 @@ create PROCEDURE TCABSUNITAddnewunit( in NewUnitcode varchar(10), in NewUnitname
 	BEGIN
 		Declare Errormsg varchar(255) default "no Unit code entered";
 		if (select count(*) from tcabs.Unit where unitCode = NewUnitcode) = 0 then 
-		call TCABSUNITValidateNewUnitCode(NewUnitcode);
-        call TCABSUNITValidateNewUnitName(NewUnitname);
+			call TCABSUNITValidateNewUnitCode(NewUnitcode);
+			call TCABSUNITValidateNewUnitName(NewUnitname);
 		insert into tcabs.Unit (unitCode, unitName) values (NewUnitcode,NewUnitname);
         else
         set Errormsg = concat( NewUnitcode, " already exist");
@@ -500,19 +500,14 @@ create PROCEDURE TCABSUNITSetNewFacultyName( in EnteredUnitcode Varchar(255), in
  DELIMITER ;
  
 DELIMITER //
-CREATE PROCEDURE TCABS_Unit_register(IN unitCode VARCHAR(10), IN unitName VARCHAR(100), IN unitFaculty VARCHAR(255))
+CREATE PROCEDURE TCABS_Unit_register(IN uCode VARCHAR(10), IN uName VARCHAR(100), IN uFaculty VARCHAR(255))
 	BEGIN
-		-- handle error conditions by issuing a ROLLBACK and exiting
-		DECLARE EXIT HANDLER FOR SQLEXCEPTION
-			BEGIN
-				ROLLBACK;
-  		END
+
+		DECLARE EXIT HANDLER FOR 45000 ROLLBACK;
 
 		START TRANSACTION;
-
-		CALL tcabs.TCABSUNITAddnewunit(unitCode, unitName);
-		CALL tcabs.TCABSUNITSetNewFacultyName(unitCode, facultyName);
-
+			CALL tcabs.TCABSUNITAddnewunit(uCode, uName);
+			CALL tcabs.TCABSUNITSetNewFacultyName(uCode, uFaculty);
 		COMMIT;
 	END// 
 DELIMITER ;
