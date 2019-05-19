@@ -17,7 +17,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 					<a class="dropdown-item" href="/tcabs/forms/registerUser.php">Add Users</a>
-          <a class="dropdown-item" href="/tcabs/forms/#">Add Units</a>
+          <a class="dropdown-item" href="/tcabs/forms/registerUnits.php">Add Units</a>
           <a class="dropdown-item" href="/tcabs/forms/#">Enrol Students</a>
         </div>
       </li>

@@ -7,8 +7,6 @@
 		header("location: /tcabs/login.php");
 	}
 
-	//$_SESSION['loggedUser']->checkRoles($_SESSION['loggedUser']->email);
-	
 	/* not relevant now
 	if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['logged_in'] = FALSE;	

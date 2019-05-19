@@ -36,7 +36,6 @@ CREATE TABLE Project (
 	PRIMARY KEY (ProjectName)
 );
 
-
 CREATE TABLE UserCat (
 	email				VARCHAR(50)				NOT NULL,
 	userType		VARCHAR(50)				NOT NULL,
@@ -392,6 +391,7 @@ DELIMITER;
 DELIMITER //
 CREATE PROCEDURE TCABS_User_register(IN fName VARCHAR(255), IN lName VARCHAR(255), IN gender VARCHAR(20), IN pNum VARCHAR(255), IN email VARCHAR(255), IN pwd VARCHAR(40)) 
 	BEGIN
+		-- still need to rollback the whole thing if any error occurs
 		CALL tcabs.TCABSUSERCreateNewUser(email , pwd);
 		CALL tcabs.TCABSUSERSetUserFirstName(email, fName);
 		CALL tcabs.TCABSUSERSetUserLastName(email, lName);
@@ -419,7 +419,7 @@ DELIMITER ;
 
 --call tcabs.TCABSUSERCreateNewUser("BestExample@hotmail.com" , 12345);
 --call tcabs.TCABSUSERCreateNewUser("Best@Supervisor.com" , 12223);
- 
+*/
  
 DELIMITER //
 create PROCEDURE TCABSUNITAddnewunit( in NewUnitcode varchar(10), in NewUnitname varchar(100))
@@ -499,6 +499,25 @@ create PROCEDURE TCABSUNITSetNewFacultyName( in EnteredUnitcode Varchar(255), in
 	END //
  DELIMITER ;
  
+DELIMITER //
+CREATE PROCEDURE TCABS_Unit_register(IN unitCode VARCHAR(10), IN unitName VARCHAR(100), IN unitFaculty VARCHAR(255))
+	BEGIN
+		-- handle error conditions by issuing a ROLLBACK and exiting
+		DECLARE EXIT HANDLER FOR SQLEXCEPTION
+			BEGIN
+				ROLLBACK;
+  		END
+
+		START TRANSACTION;
+
+		CALL tcabs.TCABSUNITAddnewunit(unitCode, unitName);
+		CALL tcabs.TCABSUNITSetNewFacultyName(unitCode, facultyName);
+
+		COMMIT;
+	END// 
+DELIMITER ;
+
+/*
  -- adding new unit to available subjects
  -- you should initalise with Addnewunit by providing the new units code which is a 3 letter prefix followed by 5 numbers. Then you provide the units name which doesn't contain numbers
 call TCABSUNITAddnewunit("ICT30002", "Information Technology Project");

@@ -138,19 +138,6 @@
 			Permission::getPerms($this->email);
 		}
 
-		public function checkRoles($userEmail) {
-			
-			// get user roles
-			$roleObj = new Role;
-			$roleObj->getRoles($userEmail);
-
-			foreach($roleObj->roles as $userType => $value) {
-				echo "{$userType} : {$value}";
-				echo "<br/>";
-			}
-
-		}
-
 		public function registerUser($fName, $lName, $gender, $pNum, $email, $pwd) {
 
 			// convert pNum to ###-###-####
@@ -161,6 +148,22 @@
 			$pwd = sha1($pwd);
 
 			$sql = "call TCABS_User_register('{$fName}', '{$lName}', '{$gender}', '{$pNum}', '{$email}', '{$pwd}')";
+
+			try {
+				$result = $GLOBALS['conn']->query($sql);
+			} catch(Exception $e) {
+				echo "<script type='text/javascript'>alert('{$e->error}');</script>";
+			}
+		}
+	}
+
+	class Unit {
+		private unitCode;
+		private unitName;
+		private unitFaculty;
+
+		public function registerUnit($uCode, $uName, $uFaculty) {
+			$sql = "call TCABS_Unit_register($uCode, $uName, $uFaculty)";
 
 			try {
 				$result = $GLOBALS['conn']->query($sql);

@@ -12,7 +12,7 @@
 			if(empty($_POST['roles'])) {
 				echo "<script type='text/javascipt'>alert('No role selected');</script>";
 				exit();
-			} else if() {
+			} else {
 
 				$nUser = new User;
 				$nUser->registerUser(
