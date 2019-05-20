@@ -4,17 +4,14 @@
 	session_start();
 	if (!isset($_SESSION['logged_in'])) {
 		header('Location: /tcabs/login.php');
-		exit();
 	} else {
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 			// validate if check boxes are ticked and no combination with student
-			if(empty($_POST['roles'])) {
-				echo "<script type='text/javascipt'>alert('No roles selected!');</script>";
+			if(!isset($_POST['roles'])) {
+				echo "<script type='text/javascript'>alert('No roles selected');</script>";
 			} else {
-
 				$nUser = new User;
-
 				try {
 					$nUser->registerUser(
 						$_POST['fName'],
@@ -22,14 +19,13 @@
 						$_POST['gender'],
 						$_POST['pNum'],
 						$_POST['email'],
-						$_POST['pwd']
+						$_POST['pwd'],
+						$_POST['roles']
 					);
 
-					$nUser->assignRoles($_POST['email'], $_POST['roles']);
 				} catch(mysqli_sql_exception $e) {
 					echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
 				}
-
 			}
 		}
 	}

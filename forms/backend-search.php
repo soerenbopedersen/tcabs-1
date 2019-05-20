@@ -38,7 +38,8 @@ if(isset($_REQUEST["term"])){
     }
 
     // Close statement
-    mysqli_stmt_close($stmt);
+    //mysqli_stmt_close($stmt);
+		$stmt->close;
 }
 
 // close connection

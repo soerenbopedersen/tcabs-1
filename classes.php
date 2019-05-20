@@ -35,7 +35,7 @@
 			$stmt = $GLOBALS['conn']->prepare("call TCABSUserCatAssignUserARole(?, ?)");
 
 			foreach($userRoleArr as $userRole => $value) {
-				$stmt->bind_param('ss', $userEmail, $userRole);
+				$stmt->bind_param('ss', $userEmail, $value);
 				
 				try {
 					$stmt->execute();
@@ -167,7 +167,7 @@
 
 		}
 
-		public function registerUser($fName, $lName, $gender, $pNum, $email, $pwd) {
+		public function registerUser($fName, $lName, $gender, $pNum, $email, $pwd, $roles) {
 
 			// convert pNum to ###-###-####
 			// will only work on 10-digit number without country code
@@ -180,8 +180,18 @@
 			$stmt->bind_param('ssssss', $fName, $lName, $gender, $pNum, $email, $pwd);
 
 			try {
+				$GLOBALS['conn']->begin_transaction();
+
 				$stmt->execute();
+
+				// to update userCat table
+				$roleObj = new Role;
+				$roleObj->assignRoles($email, $roles);
+
+				$GLOBALS['conn']->commit();
+
 			} catch(mysqli_sql_exception $e) {
+				$GLOBALS['conn']->rollback();
 				throw $e;
 			}
 
@@ -207,6 +217,23 @@
 			}
 
 			$stmt->close();
+		}
+	}
+
+	class TeachingPeriod {
+		public $term;
+		public $year;
+		public $startDate;
+		public $endDate;
+	}
+
+	class UnitOffering extends Unit {
+		private $uOffID;
+		private $cUserName;
+		private $teachperiod = new TeachingPeriod;
+
+		public __construct($unitCode) {
+			$stmt = $GLOBALS->['conn']->prepare("");
 		}
 	}
 ?>

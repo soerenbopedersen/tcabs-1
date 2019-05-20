@@ -561,7 +561,7 @@ create Procedure TCABSUserCatAssignUserARole(in UserEmail varchar(255), in RoleN
   call TCABSUserCatAssignUserARole("dtargaryen@gmail.com", "supervisor");
   call TCABSUserCatAssignUserARole("Best@Supervisor.com", "supervisor");
 
-          DELIMITER //
+DELIMITER //
 create Procedure TCABSValidateDate(in checkdate varchar(255))
 	BEGIN
     Declare ErrormsgTeachingperiod varchar(255) default "no Values entered";
@@ -569,9 +569,9 @@ create Procedure TCABSValidateDate(in checkdate varchar(255))
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "invalid date entry";
         end if;
 	END //
- DELIMITER ;
+DELIMITER ;
  
-       DELIMITER //
+DELIMITER //
 create PROCEDURE TCABSUNITOFFERINGAddNewOffering( in OfferedUnitID Varchar(255), in Offeredterm varchar(255), in Offeredyear varchar(255))
 	BEGIN
 		if(char_length(OfferedUnitID) <= 1) then
@@ -586,9 +586,9 @@ create PROCEDURE TCABSUNITOFFERINGAddNewOffering( in OfferedUnitID Varchar(255),
         end if;
 		insert into UnitOffering(unitCode, term, year) values (OfferedUnitID,Offeredterm,Offeredyear);
 	END //
- DELIMITER ;
+DELIMITER ;
 
-       DELIMITER //
+DELIMITER //
 create PROCEDURE TCABSUNITOFFERINGValidateOfferingPeriod(in Offeredterm varchar(255), in Offeredyear varchar(255))
 	BEGIN
     Declare ErrormsgTeachingperiod varchar(255) default "no Values entered";
@@ -603,7 +603,7 @@ create PROCEDURE TCABSUNITOFFERINGValidateOfferingPeriod(in Offeredterm varchar(
 	END //
  DELIMITER ;
  
-        DELIMITER //
+DELIMITER //
 create Procedure TCABSUNITOFFERINGGetKey(in OfferedUnitID Varchar(255), in Offeredterm varchar(255), in Offeredyear varchar(255), out ValuesunitOfferingID int)
 	BEGIN
     Declare ErrormsgTeachingperiod varchar(255) default "no Values entered";
@@ -616,9 +616,9 @@ create Procedure TCABSUNITOFFERINGGetKey(in OfferedUnitID Varchar(255), in Offer
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Unknown Unit code, term and year combination ";
 		end if;
 	END //
- DELIMITER ;
+DELIMITER ;
  
-         DELIMITER //
+DELIMITER //
 create Procedure TCABSUNITOFFERINGSetCensusDate(in OfferedUnitID Varchar(255), in Offeredterm varchar(255), in Offeredyear varchar(255), in OfferedCencusdate varchar(255))
 	BEGIN
     Declare ErrormsgTeachingperiod varchar(255) default "no Values entered";
@@ -629,10 +629,9 @@ create Procedure TCABSUNITOFFERINGSetCensusDate(in OfferedUnitID Varchar(255), i
         call TCABSUNITOFFERINGValidateCenDate(@ValuesunitOfferingID, OfferedCencusdate);
         update tcabs.Unitoffering set censusDate = STR_TO_DATE(OfferedCencusdate, '%Y-%m-%d') where unitOfferingID = @ValuesunitOfferingID; 
 	END //
- DELIMITER ;
+DELIMITER ;
 
-
-         DELIMITER //
+DELIMITER //
 create Procedure TCABSUNITOFFERINGValidateCenDate(in OfferingKey int, in OfferedCencusdate varchar(255))
 	BEGIN
     Declare StoredYear varchar(255) default "";
@@ -649,9 +648,9 @@ create Procedure TCABSUNITOFFERINGValidateCenDate(in OfferingKey int, in Offered
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Cencus date can not occur after or after the end date";
         end if;
 	END //
- DELIMITER ;
+DELIMITER ;
  
-          DELIMITER //
+DELIMITER //
 create Procedure TCABSUNITOFFERINGSetConvenor(in ConvnorEmail varchar(255), in OfferedUnitID Varchar(255), in Offeredterm varchar(255), in Offeredyear varchar(255))
 	BEGIN
     Declare ErrormsgTeachingperiod varchar(255) default "no Values entered";
@@ -670,7 +669,7 @@ create Procedure TCABSUNITOFFERINGSetConvenor(in ConvnorEmail varchar(255), in O
         end if;
         update tcabs.Unitoffering set cUserName = ConvnorEmail where unitOfferingID = @ValuesunitOfferingID; 
 	END //
- DELIMITER ;
+DELIMITER ;
 
  -- add unit offering 
  -- must initalise new unit offering with Add new offering. Pass in a matching Subject code and a matching Offering term and Offering year combo
