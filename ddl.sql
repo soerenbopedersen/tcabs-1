@@ -391,12 +391,17 @@ DELIMITER;
 DELIMITER //
 CREATE PROCEDURE TCABS_User_register(IN fName VARCHAR(255), IN lName VARCHAR(255), IN gender VARCHAR(20), IN pNum VARCHAR(255), IN email VARCHAR(255), IN pwd VARCHAR(40)) 
 	BEGIN
-		-- still need to rollback the whole thing if any error occurs
-		CALL tcabs.TCABSUSERCreateNewUser(email , pwd);
-		CALL tcabs.TCABSUSERSetUserFirstName(email, fName);
-		CALL tcabs.TCABSUSERSetUserLastName(email, lName);
-		CALL tcabs.TCABSUSERSetUserGender(email, gender);
-		CALL tcabs.TCABSUSERSetUserPhone(email, pNum);
+		DECLARE EXIT HANDLER FOR 45000 ROLLBACK;
+
+		START TRANSACTION;
+			CALL tcabs.TCABSUSERCreateNewUser(email , pwd);
+			CALL tcabs.TCABSUSERSetUserFirstName(email, fName);
+			CALL tcabs.TCABSUSERSetUserLastName(email, lName);
+			CALL tcabs.TCABSUSERSetUserGender(email, gender);
+			CALL tcabs.TCABSUSERSetUserPhone(email, pNum);
+			-- confused about the procedure below
+			-- CALL TCABSUserCatAssignUserARole(email, uRole);
+		COMMIT;
 	END// 
 DELIMITER ;
 
@@ -519,8 +524,9 @@ call TCABSUNITAddnewunit("ICT30002", "Information Technology Project");
 call TCABSUNITAddnewunit("ICT30003", "Information Technology Assignment");
 -- this sets the original Faculty name to the new faculty name which doesn't contain numbers, utalising the unit code as its id
 call TCABSUNITSetNewFacultyName("ICT30002", "Buisnesses and Law");
+*/
  
-             DELIMITER //
+DELIMITER //
 create Procedure TCABSUserCatAssignUserARole(in UserEmail varchar(255), in RoleName varchar(255))
 	BEGIN
 		if (char_length(UserEmail) < 1) then
@@ -545,6 +551,8 @@ create Procedure TCABSUserCatAssignUserARole(in UserEmail varchar(255), in RoleN
         insert into UserCat values (UserEmail,RoleName);
 	END //
  DELIMITER ;
+
+/*
  -- User Cat
  -- assigns the User with the email Example@hotmail.com to the Role of testerRole
  call TCABSUserCatAssignUserARole("Example@hotmail.com", "student");

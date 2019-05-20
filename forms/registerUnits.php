@@ -7,8 +7,6 @@
 	} else {
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
 			$unitObj = new Unit;
 
 			try {

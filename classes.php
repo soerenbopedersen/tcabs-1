@@ -30,6 +30,22 @@
 			}
 		}
 
+		public function assignRoles($userEmail, $userRoleArr) {
+			// how to role back if error occurs for some role
+			$stmt = $GLOBALS['conn']->prepare("call TCABSUserCatAssignUserARole(?, ?)");
+
+			foreach($userRoleArr as $userRole => $value) {
+				$stmt->bind_param('ss', $userEmail, $userRole);
+				
+				try {
+					$stmt->execute();
+				} catch(mysqli_sql_exception $e) {
+					throw $e;
+				}
+			}
+			$stmt->close();
+		}
+
 	}
 
 	class Permission extends Role{
@@ -147,13 +163,16 @@
 			// encrypt password
 			$pwd = sha1($pwd);
 
-			$sql = "call TCABS_User_register('{$fName}', '{$lName}', '{$gender}', '{$pNum}', '{$email}', '{$pwd}')";
+			$stmt = $GLOBALS['conn']->prepare("call TCABS_User_register(?, ?, ?, ?, ?, ?)");
+			$stmt->bind_param('ssssss', $fName, $lName, $gender, $pNum, $email, $pwd);
 
 			try {
-				$result = $GLOBALS['conn']->query($sql);
-			} catch(Exception $e) {
-				echo "<script type='text/javascript'>alert('{$e->error}');</script>";
+				$stmt->execute();
+			} catch(mysqli_sql_exception $e) {
+				throw $e;
 			}
+
+			$stmt->close();
 		}
 	}
 
