@@ -11,16 +11,60 @@
       <li class="nav-item">
 				<a class="nav-link" href="/tcabs/profile.php">Profile</a>
       </li>
-	  	<li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-user-secret"></i> Admin
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-					<a class="dropdown-item" href="/tcabs/forms/registerUser.php">Add Users</a>
-          <a class="dropdown-item" href="/tcabs/forms/registerUnits.php">Add Units</a>
-          <a class="dropdown-item" href="/tcabs/forms/#">Enrol Students</a>
-        </div>
-      </li>
+
+			<?php 
+
+				$adminArr = array(
+					"registerUser.php" => "Register Users",
+					"registerUnits.php" => "Register Units",
+					"enrolStudents.php" => "Enrol Students"
+				);
+
+				$convenorArr = array(
+					"registerTeam.php" => "Register Team",
+					"test.php" => "Something",
+					"test.php" => "Something",
+				);
+
+				$supervisorArr = array(
+					"test.php" => "Something",
+					"test.php" => "Something",
+					"test.php" => "Something",
+				);
+
+				$studentArr = array(
+					"test.php" => "Something",
+					"test.php" => "Something",
+				);
+
+				$formArr = array();
+
+				foreach($_SESSION['loggedUser']->uRoles as $userType => $access) {
+					if(isset($access)) {
+						switch($userType) {
+							case 'admin'			: $formArr = $adminArr;
+																	break;
+							case 'convenor'		: $formArr = $convenorArr;
+																	break;
+							case 'supervisor'	: $formArr = $supervisorArr;
+																	break;
+							case 'student'		: $formArr = $studentArr;
+																	break;
+						}
+
+	  				echo "<li id='dropdown-admin' class='nav-item dropdown'>
+        						<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+          						<i class='fas fa-user-secret'></i>{$userType}</a> 
+        						<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>";
+
+						foreach($formArr as $formPath => $value) {
+							echo "<a class='dropdown-item' href='/tcabs/forms/{$formPath}'>$value</a>";
+						}
+
+        		echo "</div></li>";
+					}
+				}
+			?>
 	  	<li class="nav-item">
 				<a class="nav-link" href="/tcabs/logout.php">Logout</a>
       </li>

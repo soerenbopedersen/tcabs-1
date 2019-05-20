@@ -3,35 +3,35 @@
 	require("db-conn.php");	// connect to database
 
 	class Role {
-		protected $roles;
+		public $roles;
 
-		protected function __construct() {
+		public function __construct() {
 			$this->roles = array();
 		}
 
-		protected function getRoles($userEmail) {
+		public function getRoles($userEmail) {
 
 			// Populate the $roles array with all the roles a user has
-			$sql = "SELECT userType 
-							FROM UserCat WHERE email = '{$userEmail}'";
+			$stmt = $GLOBALS['conn']->prepare("SELECT userType 
+							FROM UserCat WHERE email = ?");
 
-			$result = $GLOBALS['conn']->query($sql) or die($GLOBALS['conn']->error) ;
+			$stmt->bind_param('s', $userEmail);
 
-			if($GLOBALS['conn']->error) {
-				echo $GLOBALS['conn']->error;
-			} else {
-				if($result->num_rows > 0) {
-					while($row = $result->fetch_assoc()) {
-						$this->roles[$row['userType']] = TRUE;
-					}
-				} else {
-					$this->roles = null;
+			try {
+				$stmt->execute();
+				$stmt->store_result();
+				$stmt->bind_result($userType);
+
+				while($stmt->fetch()) {
+					$this->roles[$userType] = TRUE;
 				}
+			} catch(mysqli_sql_exception $e) {
+				echo "<script type='text/javascript'>alert('{$e}');</script>";
 			}
 		}
 
 		public function assignRoles($userEmail, $userRoleArr) {
-			// how to role back if error occurs for some role
+			// how to roll back if error occurs for some role
 			$stmt = $GLOBALS['conn']->prepare("call TCABSUserCatAssignUserARole(?, ?)");
 
 			foreach($userRoleArr as $userRole => $value) {
@@ -56,36 +56,38 @@
 			$this->permissions = array();
 		}
 		
-		protected function getPerms($userEmail) {
+		protected function getPerms($userRoles) {
 
-			$roleObj = new Role;
-			$roleObj->getRoles($userEmail);
-
-			if($roleObj->roles == NULL) {
+			if($userRoles == NULL) {
 				echo "No roles assigned"; 
 			} else {
+
 				$subQuery = "";
-				foreach($roleObj->roles as $userType => $access) {
+
+				foreach($userRoles as $userType => $access) {
 					$subQuery = $subQuery . "'{$userType}', "; 
 				}
 				$subQuery = substr($subQuery, 0, -2);
 
 				// using subquery
-				$sql = "SELECT procName FROM Permission	
-								WHERE userType IN ({$subQuery});";
-	
-				$result = $GLOBALS['conn']->query($sql) or die($GLOBALS['conn']->error) ;
-	
-				if($GLOBALS['conn']->error) {
-					echo $GLOBALS['conn']->error;
-				} else {
-					if($result->num_rows > 0) {
-						while($row = $result->fetch_assoc()) {
-							$this->permissions[$row["procName"]] = true;
+				$stmt = $GLOBALS['conn']->prepare("SELECT procName FROM Permission	
+								WHERE userType IN (?)");
+
+				$stmt->bind_param("s", $subQuery);
+
+				try {
+					$stmt->execute();
+					$stmt->store_result();
+					$stmt->bind_result($procName);
+
+					if($stmt->num_rows > 0) {
+						while($stmt->fetch()) {
+							echo $procName;
+							$this->permissions[$procName] = TRUE;
 						}
-					} else {
-						$this->permissions = null;
 					}
+				} catch(mysqli_sql_exception $e) {
+					echo "<script type='text/javascript'>alert('{$e}');</script>";
 				}
 			}
 		}
@@ -104,8 +106,12 @@
 		public $email;
 		private $pwd;	// hidden to outside classes and functions
 
+		public $uRoles;
+		public $uPerms;
+
 		public function __construct() {
 			Permission::__construct();
+			$uRoles = array();
 		}
 
 		public function userExist() {
@@ -150,8 +156,15 @@
 				}
 			}
 
+			// get all roles of user and store it in uRoles
+			$roleObj = new Role;
+			$roleObj->getRoles($this->email);
+			$this->uRoles = $roleObj->roles;
+
 			// Get all the stored procedures/functions a user can access
-			Permission::getPerms($this->email);
+			//Permission::getPerms($this->uRoles);
+			//$this->uPerms = $this->permissions;
+
 		}
 
 		public function registerUser($fName, $lName, $gender, $pNum, $email, $pwd) {

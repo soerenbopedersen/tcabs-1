@@ -7,7 +7,7 @@
 		exit();
 	} else {
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
-			$_SESSION['roles'] = $_POST['roles'];
+
 			// validate if check boxes are ticked and no combination with student
 			if(empty($_POST['roles'])) {
 				echo "<script type='text/javascipt'>alert('No roles selected!');</script>";
@@ -25,14 +25,10 @@
 						$_POST['pwd']
 					);
 
-
 					$nUser->assignRoles($_POST['email'], $_POST['roles']);
 				} catch(mysqli_sql_exception $e) {
-					//echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
+					echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
 				}
-					foreach($_POST['roles'] as $role => $value) {
-						echo $role;
-					}
 
 			}
 		}
@@ -53,16 +49,13 @@
    <body class="loggedin">
 		<?php include "../views/header.php"; ?>
 		<div class="content">
-		
-		
 			<h2>User Administration</h2><h2-date><?php echo date('d F, Y (l)'); ?></h2-date><br>
 		<div>
-		
 		
 		<?php 
 		//print_r($_SESSION['roles']);
 		//foreach($_SESSION['roles'] as $key => $value){
-		//					if($key=='admin') {
+							//if($key=='admin') {
 		?>
 
 		<!-- Nav tabs -->
@@ -219,13 +212,13 @@
 		</div>
   </div>
   
-  		<?php // } else { ?>
+  		<?php  //} else { ?>
 		
-			<h2>Admin Function</h2>
+		<!--	<h2>Admin Function</h2>
 			<div>
 			<p>Sorry, you do not have access to this function</p>
-			</div>
-		<?php // } } ?>
+			</div>-->
+		<?php  //} } ?>
   </div>
 </div>
 
