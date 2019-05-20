@@ -101,16 +101,16 @@
 			<p>User Roles</p>
 			<div class="row">
 				<div class="col">
-					<label class="checkbox-inline"><input type="checkbox" name="usrLevel[]" value="admin"> Admin</label>
+					<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="admin"> Admin</label>
     		</div>
 				<div class="col">
-  				<label class="checkbox-inline"><input type="checkbox" name="usrLevel[]" value="convenor"> Convenor</label>
+  				<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="convenor"> Convenor</label>
 				</div>
 				<div class="col">
-   				<label class="checkbox-inline"><input type="checkbox" name="usrLevel[]" value="supervisor"> Supervisor</label>
+   				<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="supervisor"> Supervisor</label>
     		</div>
 				<div class="col">
-    			<label class="checkbox-inline"><input type="checkbox" name="usrLevel[]" value="student"> Student</label>
+    			<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="student"> Student</label>
     		</div>
 			</div>
   		<button class="btn btn-info my-4 btn-block" type="submit" name="singleUser" value="submit">Register</button>
