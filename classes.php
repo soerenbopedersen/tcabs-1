@@ -2,6 +2,11 @@
 	// Define different classes with relevant and useful functions here
 	require("db-conn.php");	// connect to database
 
+	function array_push_assoc($array, $key, $value){
+		$array[$key] = $value;
+		return $array;
+	}
+
 	class Role {
 		public $roles;
 
@@ -238,37 +243,21 @@
 			$searchResult = array();
 
 			$stmt = $GLOBALS['conn']->prepare("SELECT unitCode, unitName FROM Unit
-									WHERE unitCode LIKE ?");
-			//$stmt = $GLOBALS['conn']->prepare("SELECT unitCode, unitName FROM Unit
-			//					WHERE unitCode = ?");
-			//$stmt = $GLOBALS['conn']->prepare("SELECT unitCode, unitName FROM Unit
-			//					WHERE unitCode LIKE CONCAT('%', ?, '%')");
-			//$stmt->bind_param('ss', $searchQuery, $searchQuery);
-			$stmt->bind_param('s', $searchQuery);
+									WHERE unitCode LIKE ? or unitName LIKE ?");
+			$stmt->bind_param('ss', $searchQuery, $searchQuery);
 
 			try {
 				$stmt->execute();
 				$stmt->store_result();
 				$stmt->bind_result($unitCode, $unitName);
 
-				$count = 0;
-				echo $stmt->num_rows;
-				exit();
-
 				if($stmt->num_rows > 0) {
-					// only runs for the first row
 					while($stmt->fetch()) {
-						if($count == 0) {
-							$searchResult = array($unitCode => $unitName);
-							$count++;
-						}
-						echo $unitCode . " - " . $unitName;
-						array_merge($searchResult, array($unitCode => $unitName));
-						print_r($searchResult);
+						$searchResult[$unitCode] = $unitName;
 					}
 				}
 				$stmt->close();
-				//return $searchResult;
+				return $searchResult;
 			} catch(mysqli_sql_exception $e) {
 				throw $e;
 				return null;
