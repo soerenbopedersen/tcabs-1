@@ -1,6 +1,6 @@
 <?php
 
-	mysqli_report(MYSQLI_REPORT_STRICT | MYSQLI_REPORT_ALL);
+	mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_INDEX);
 
 	//main server
   //$conn = new mysqli("139.99.166.3", "tcabs_web", "Database1", "tcabs");

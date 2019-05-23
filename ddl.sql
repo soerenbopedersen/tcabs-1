@@ -65,7 +65,8 @@ CREATE TABLE Unit (
 	unitName		VARCHAR(100)			NOT NULL,
 	faculty			VARCHAR(255)				,
 
-	PRIMARY KEY (unitCode)
+	PRIMARY KEY (unitCode),
+	INDEX search (unitCode, unitName)
 );
 
 CREATE TABLE TeachingPeriod (
@@ -249,10 +250,13 @@ INSERT INTO tcabs.TeachingPeriod VALUES ("Summer", "2018", STR_TO_DATE("2019-5-3
 
 INSERT INTO tcabs.UserCat VALUES ("dtargaryen@gmail.com", "admin");
 INSERT INTO tcabs.UserCat VALUES ("dtargaryen@gmail.com", "convenor");
+INSERT INTO tcabs.UserCat VALUES ("jsnow@gmail.com", "admin");
+INSERT INTO tcabs.UserCat VALUES ("astark@gmail.com", "admin");
+
+
+INSERT INTO tcabs.UnitOffering VALUES (1, "ICT30001", "dtargaryen@gmail.com", "Semester 2", "2018", "2018-06-05");
 
 /*
-INSERT INTO tcabs.UnitOffering VALUES (1, "ICT30001", "rbaratheon@gmail.com", "Semester 2", "2018", "31 March 2018");
-
 INSERT INTO tcabs.Enrolment VALUES (1, 1, "dtargaryen@gmail.com");
 
 INSERT INTO tcabs.Functions VALUES (1, "TCABSUSERCreateNewUser");
@@ -560,6 +564,7 @@ create Procedure TCABSUserCatAssignUserARole(in UserEmail varchar(255), in RoleN
  call TCABSUserCatAssignUserARole("jsnow@gmail.com", "convenor");
   call TCABSUserCatAssignUserARole("dtargaryen@gmail.com", "supervisor");
   call TCABSUserCatAssignUserARole("Best@Supervisor.com", "supervisor");
+*/
 
 DELIMITER //
 create Procedure TCABSValidateDate(in checkdate varchar(255))
@@ -596,7 +601,7 @@ create PROCEDURE TCABSUNITOFFERINGValidateOfferingPeriod(in Offeredterm varchar(
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "values have not been entered into the feilds";
         end if;
         -- need to add time validation so that users can't create offerings in the past
-		if((select count(*) from tcabs.teachingperiod where term = Offeredterm and teachingperiod.year = Offeredyear) <> 1) then
+		if((select count(*) from TeachingPeriod as T where term = Offeredterm and T.year = Offeredyear) <> 1) then
 			set ErrormsgTeachingperiod = concat("There is no teaching period for ", Offeredterm, " ", Offeredyear);
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = ErrormsgTeachingperiod;
 		end if;
@@ -627,7 +632,7 @@ create Procedure TCABSUNITOFFERINGSetCensusDate(in OfferedUnitID Varchar(255), i
         end if;
         call TCABSUNITOFFERINGGetKey(OfferedUnitID,Offeredterm,Offeredyear,@ValuesunitOfferingID);
         call TCABSUNITOFFERINGValidateCenDate(@ValuesunitOfferingID, OfferedCencusdate);
-        update tcabs.Unitoffering set censusDate = STR_TO_DATE(OfferedCencusdate, '%Y-%m-%d') where unitOfferingID = @ValuesunitOfferingID; 
+        update tcabs.UnitOffering set censusDate = STR_TO_DATE(OfferedCencusdate, '%Y-%m-%d') where unitOfferingID = @ValuesunitOfferingID; 
 	END //
 DELIMITER ;
 
@@ -661,16 +666,32 @@ create Procedure TCABSUNITOFFERINGSetConvenor(in ConvnorEmail varchar(255), in O
         if ((select count(*) from Users where email = ConvnorEmail) <> 1) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Entered Email is not found";
         end if;
-        if ((select usertype from Usercat where email = ConvnorEmail) <> "convenor") then
+        if ((select usertype from UserCat where email = ConvnorEmail) <> "convenor") then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Entered User Does not have the role of convenor";
         end if;
         if ((select count(*) from OfferingStaff where Username = ConvnorEmail and unitOfferingID = @ValuesunitOfferingID) <> 1) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Entered user isn't set as a staff member for this offering";
         end if;
-        update tcabs.Unitoffering set cUserName = ConvnorEmail where unitOfferingID = @ValuesunitOfferingID; 
+        update tcabs.UnitOffering set cUserName = ConvnorEmail where unitOfferingID = @ValuesunitOfferingID; 
 	END //
 DELIMITER ;
 
+
+DELIMITER //
+CREATE PROCEDURE TCABS_UnitOff_add(IN unitCode Varchar(10), IN convenorEmail varchar(255), IN term varchar(10), IN year varchar(10), IN censusDate varchar(255))
+	BEGIN
+		-- I keep getting error -subquery returns more than one row
+		DECLARE EXIT HANDLER FOR 45000 ROLLBACK;
+
+		START TRANSACTION;
+			CALL tcabs.TCABSUNITOFFERINGAddNewOffering(unitCode, term, year);
+			CALL tcabs.TCABSUNITOFFERINGSetCensusDate(unitCode, term, year, censusDate);
+			CALL tcabs.TCABSUNITOFFERINGSetConvenor(convenorEmail, unitCode, term, year);
+		COMMIT;
+	END// 
+DELIMITER ;
+
+/*
  -- add unit offering 
  -- must initalise new unit offering with Add new offering. Pass in a matching Subject code and a matching Offering term and Offering year combo
  call TCABSUNITOFFERINGAddNewOffering("ICT30002", "Semester 1", "2019");
@@ -682,7 +703,9 @@ DELIMITER ;
  call TCABSUNITOFFERINGSetCensusDate("ICT30002", "Semester 1", "2019","2019-6-03");
  call TCABSUNITOFFERINGSetCensusDate("ICT30003", "Semester 1", "2019","2019-6-03");
  -- additional functionality called TCABSUNITOFFERINGSetConvenor after Add new TCABSOFFERINGSTAFFAddOfferingStaff
+ */
 
+/*
           DELIMITER //
 create Procedure TCABSENROLMENTAddNewEnrolment(in NewEnrolUser varchar(255),in SelectedUnitCode varchar(255), in SelectedOfferingterm varchar(255), in SelectedOfferingyear varchar(255))
 	BEGIN

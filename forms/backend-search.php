@@ -13,11 +13,11 @@ if(isset($_REQUEST["term"])){
     $sql = "SELECT * FROM users WHERE email LIKE ?";
 
     if($stmt = mysqli_prepare($link, $sql)){
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "s", $param_term);
-
         // Set parameters
         $param_term = $_REQUEST["term"] . '%';
+
+    //    // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "s", $param_term);
 
         // Attempt to execute the prepared statement
         if(mysqli_stmt_execute($stmt)){
@@ -38,8 +38,7 @@ if(isset($_REQUEST["term"])){
     }
 
     // Close statement
-    //mysqli_stmt_close($stmt);
-		$stmt->close;
+   //	mysqli_stmt_close($stmt);
 }
 
 // close connection

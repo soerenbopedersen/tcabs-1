@@ -7,6 +7,10 @@
 		header("location: /tcabs/login.php");
 	}
 
+	// subquery returns more than one row(error)
+	//$uOffObj = new UnitOffering("STA10003");
+	//$uOffObj->addUnitOff("ICT30001", "dtargaryen@gmail.com", "Semester 2", "2019", "2019-05-09");
+
 	/* not relevant now
 	if($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['logged_in'] = FALSE;	

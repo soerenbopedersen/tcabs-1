@@ -55,158 +55,144 @@
 		?>
 
 		<!-- Nav tabs -->
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" data-toggle="tab" href="#home">Add</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#menu1">Bulk Import via CSV</a>
-  </li>
-    <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#menu2">Update</a>
-  </li>
+		<ul class="nav nav-tabs">
+  		<li class="nav-item">
+    		<a class="nav-link active" data-toggle="tab" href="#home">Add</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" data-toggle="tab" href="#menu1">Bulk Import via CSV</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" data-toggle="tab" href="#menu2">Update</a>
+			</li>
       <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#menu3">Delete</a>
-  </li>
-</ul>
+				<a class="nav-link" data-toggle="tab" href="#menu3">Delete</a>
+			</li>
+		</ul>
 
-<!-- Tab panes -->
-<div class="tab-content">
+		<!-- Tab panes -->
+		<div class="tab-content">
 
-<!-- Tab 1 -->
-  <div class="tab-pane container active" id="home">
-		<form action="registerUser.php" method ="post" class="was-validated">
-		<br>
-  	  <p class="h4 mb-4 text-center">Add User</p>
-			<input type="text" id="fName" name="fName" class="form-control" placeholder="First Name" required><br>
- 	   	<input type="text" id="lName" name="lName" class="form-control" placeholder="Last Name" required><br>
-			<select class="browser-default custom-select" id="gender" name="gender" required>
- 	  		<option value="" disabled="" selected="">Gender</option>
- 	    	<option value="M">Male</option>
- 	    	<option value="F">Female</option>
- 	  	</select><br><br>
-			<input type="text" id="pNum" name="pNum" class="form-control" placeholder="Phone number" aria-describedby="defaultRegisterFormPhoneHelpBlock" required><br>
-    	<input type="email" id="email" name="email" class="form-control" placeholder="E-mail" required><br>
-    	<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Password" aria-describedby="defaultRegisterFormPasswordHelpBlock" required><br>
+		<!-- Tab 1 -->
+  	<div class="tab-pane container active" id="home">
+			<form action="registerUser.php" method ="post" class="was-validated"><br>
+  		  <p class="h4 mb-4 text-center">Add User</p>
+				<input type="text" id="fName" name="fName" class="form-control" placeholder="First Name" required><br>
+ 	 	  	<input type="text" id="lName" name="lName" class="form-control" placeholder="Last Name" required><br>
+				<select class="browser-default custom-select" id="gender" name="gender" required>
+ 	 		 		<option value="" disabled="" selected="">Gender</option>
+ 	 		   	<option value="M">Male</option>
+ 	 		   	<option value="F">Female</option>
+ 	 		 	</select><br><br>
+				<input type="text" id="pNum" name="pNum" class="form-control" placeholder="Phone number" aria-describedby="defaultRegisterFormPhoneHelpBlock" required><br>
+   		 	<input type="email" id="email" name="email" class="form-control" placeholder="E-mail" required><br>
+   		 	<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Password" aria-describedby="defaultRegisterFormPasswordHelpBlock" required><br>
 	
-			<p>User Roles</p>
-			<div class="row">
-				<div class="col">
-					<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="admin"> Admin</label>
-    		</div>
-				<div class="col">
-  				<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="convenor"> Convenor</label>
+				<p>User Roles</p>
+				<div class="row">
+					<div class="col">
+						<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="admin"> Admin</label>
+   		 		</div>
+					<div class="col">
+  					<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="convenor"> Convenor</label>
+					</div>
+					<div class="col">
+   					<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="supervisor"> Supervisor</label>
+    			</div>
+					<div class="col">
+    				<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="student"> Student</label>
+    			</div>
 				</div>
-				<div class="col">
-   				<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="supervisor"> Supervisor</label>
-    		</div>
-				<div class="col">
-    			<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="student"> Student</label>
-    		</div>
-			</div>
-  		<button class="btn btn-info my-4 btn-block" type="submit" name="singleUser" value="submit">Register</button>
-		</form>
+  			<button class="btn btn-info my-4 btn-block" type="submit" name="singleUser" value="submit">Register Unit</button>
+			</form>
 		</div>
 		
-<!-- Tab 2 -->	
-  <div class="tab-pane container fade" id="menu1">
-  <form action="registerUser.php" method ="post" class="was-validated">
-		<br>
-  	  <p class="h4 mb-4 text-center">Bulk Import via CSV</p>
-	<form>
-  <div class="form-group">
-    <label for="csvFileForm">Please choose a CSV file to upload</label>
-    <input type="file" class="form-control-file" id="csvFileForm">
-  </div>
-</form>
-		</form>
+		<!-- Tab 2 -->	
+  	<div class="tab-pane container fade" id="menu1">
+  		<form action="registerUser.php" method ="post" class="was-validated"><br>
+  	  	<p class="h4 mb-4 text-center">Bulk Import via CSV</p>
+  			<div class="form-group">
+    			<label for="csvFileForm">Please choose a CSV file to upload</label>
+   			 	<input type="file" class="form-control-file" id="csvFileForm">
+  			</div>
+  			<button class="btn btn-info my-4 btn-block" type="submit" name="csv" value="submit">Register Units</button>
+			</form>
 		</div>
 		
 		
 		<!-- Tab 3 -->
-  <div class="tab-pane container fade" id="menu2">
-	<form action="registerUser.php" method ="post" class="was-validated">
-  <br>
-  	  <p class="h4 mb-4 text-center">Update User</p>
-			<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-			<script type="text/javascript">
-			$(document).ready(function(){
-			    $('.search-box input[type="text"]').on("keyup input", function(){
+		<div class="tab-pane container fade" id="menu2">
+			<form action="registerUser.php" method ="post" class="was-validated"><br>
+  	  	<p class="h4 mb-4 text-center">Update User</p>
+
+				<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+				<script type="text/javascript">
+					$(document).ready(function(){
+			    	$('.search-box input[type="text"]').on("keyup input", function(){
 			        /* Get input value on change */
 			        var inputVal = $(this).val();
 			        var resultDropdown = $(this).siblings(".result");
 			        if(inputVal.length){
-			            $.get("backend-search.php", {term: inputVal}).done(function(data){
-			                // Display the returned data in browser
-			                resultDropdown.html(data);
-			            });
+			        	$.get("backend-search.php", {term: inputVal}).done(function(data){
+			          	// Display the returned data in browser
+									resultDropdown.html(data);
+			          });
 			        } else{
-			            resultDropdown.empty();
+			          resultDropdown.empty();
 			        }
-			    });
+			    	});
 
-			    // Set search input value on click of result item
-			    $(document).on("click", ".result p", function(){
-			        $(this).parents(".search-box").find('input[type="text"]').val($(this).text());
-			        $(this).parent(".result").empty();
-			    });
-			});
-			</script>
-			</head>
-			<body>
-			    <div class="search-box">
-			        <input type="text" autocomplete="off" placeholder="Search User..." />
-			        <div class="result"></div>
-			    </div>
-			</body>
-
-</form>
-		</form>
+			    	// Set search input value on click of result item
+			    	$(document).on("click", ".result p", function(){
+			    		$(this).parents(".search-box").find('input[type="text"]').val($(this).text());
+			    		$(this).parent(".result").empty();
+			    	});
+					});
+				</script>
+				<div class="search-box">
+					<input type="text" autocomplete="off" placeholder="Search User..." />
+					<div class="result"></div>
+				</div>
+			</form>
 		</div>
 
+		<!-- Tab 4 -->
+		<div class="tab-pane container fade" id="menu3"><br>
+			<form action="registerUser.php" method ="post" class="was-validated"><br>
+  	  	<p class="h4 mb-4 text-center">Delete User</p>
 
-				<!-- Tab 4 -->
-  <div class="tab-pane container fade" id="menu3">
-  <br>
-  	  <p class="h4 mb-4 text-center">Delete User</p>
-			<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-			<script type="text/javascript">
-			$(document).ready(function(){
+				<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+				<script type="text/javascript">
+				$(document).ready(function(){
 					$('.search-box input[type="text"]').on("keyup input", function(){
-							/* Get input value on change */
-							var inputVal = $(this).val();
-							var resultDropdown = $(this).siblings(".result");
-							if(inputVal.length){
-									$.get("backend-search.php", {term: inputVal}).done(function(data){
-											// Display the returned data in browser
-											resultDropdown.html(data);
-									});
-							} else{
-									resultDropdown.empty();
-							}
+						/* Get input value on change */
+						var inputVal = $(this).val();
+						var resultDropdown = $(this).siblings(".result");
+						if(inputVal.length){
+							$.get("backend-search.php", {term: inputVal}).done(function(data){
+								// Display the returned data in browser
+								resultDropdown.html(data);
+							});
+						} else{
+							resultDropdown.empty();
+						}
 					});
 
 					// Set search input value on click of result item
 					$(document).on("click", ".result p", function(){
-							$(this).parents(".search-box").find('input[type="text"]').val($(this).text());
-							$(this).parent(".result").empty();
+						$(this).parents(".search-box").find('input[type="text"]').val($(this).text());
+						$(this).parent(".result").empty();
 					});
-			});
-			</script>
-			</head>
-			<body>
-					<div class="search-box">
-							<input type="text" autocomplete="off" placeholder="Search User..." />
-							<input type="submit" class="btn btn-primary" name="deleteSubmit" value="DELETE">
-							<div class="result"></div>
-					</div>
-			</body>
-
-
-</form>
-		</form>
+				});
+				</script>
+				<div class="search-box">
+					<input type="text" autocomplete="off" placeholder="Search User..." />
+					<input type="submit" class="btn btn-primary" name="deleteSubmit" value="DELETE">
+					<div class="result"></div>
+				</div>
+			</form>
 		</div>
-  </div>
+	</div>
   
   		<?php  //} else { ?>
 		
@@ -215,10 +201,6 @@
 			<p>Sorry, you do not have access to this function</p>
 			</div>-->
 		<?php  //} } ?>
-  </div>
-</div>
-
-		</div>
+  	<?php include "../views/footer.php";  ?>  
 	</body>
-  <?php include "../views/footer.php";  ?>  
 </html>

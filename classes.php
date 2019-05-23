@@ -78,12 +78,12 @@
 				try {
 					$stmt->execute();
 					$stmt->store_result();
-					$stmt->bind_result($procName);
+					$stmt->bind_result($procname);
 
 					if($stmt->num_rows > 0) {
 						while($stmt->fetch()) {
-							echo $procName;
-							$this->permissions[$procName] = TRUE;
+							echo $procname;
+							$this->permissions[$procname] = true;
 						}
 					}
 				} catch(mysqli_sql_exception $e) {
@@ -167,6 +167,35 @@
 
 		}
 
+		// this function can be used to get all users with a particular role
+		public function getUsersForRole($userRole) {
+
+			$stmt = $GLOBALS['conn']->prepare("SELECT email FROM UserCat
+								WHERE userType = ?");
+
+			$stmt->bind_param('s', $userRole);
+
+			try {
+				$stmt->execute();
+				$stmt->store_result();
+				$stmt->bind_result($email);
+
+				$userArr = array();
+
+				if($stmt->num_rows > 0) {
+					while($stmt->fetch()) {
+						array_push($userArr, $email);
+					}
+				}
+				return $userArr;
+				$stmt->close();
+			} catch(mysqli_sql_exception $e) {
+				throw $e;
+			}
+		
+		}
+
+		// to add a user to a data base - updating Users and UserCat tables
 		public function registerUser($fName, $lName, $gender, $pNum, $email, $pwd, $roles) {
 
 			// convert pNum to ###-###-####
@@ -200,9 +229,51 @@
 	}
 
 	class Unit {
-		private $unitCode;
 		private $unitName;
 		private $unitFaculty;
+
+		protected $unitCode;
+
+		public function searchUnit($searchQuery) {
+			$searchResult = array();
+
+			$stmt = $GLOBALS['conn']->prepare("SELECT unitCode, unitName FROM Unit
+									WHERE unitCode LIKE ?");
+			//$stmt = $GLOBALS['conn']->prepare("SELECT unitCode, unitName FROM Unit
+			//					WHERE unitCode = ?");
+			//$stmt = $GLOBALS['conn']->prepare("SELECT unitCode, unitName FROM Unit
+			//					WHERE unitCode LIKE CONCAT('%', ?, '%')");
+			//$stmt->bind_param('ss', $searchQuery, $searchQuery);
+			$stmt->bind_param('s', $searchQuery);
+
+			try {
+				$stmt->execute();
+				$stmt->store_result();
+				$stmt->bind_result($unitCode, $unitName);
+
+				$count = 0;
+				echo $stmt->num_rows;
+				exit();
+
+				if($stmt->num_rows > 0) {
+					// only runs for the first row
+					while($stmt->fetch()) {
+						if($count == 0) {
+							$searchResult = array($unitCode => $unitName);
+							$count++;
+						}
+						echo $unitCode . " - " . $unitName;
+						array_merge($searchResult, array($unitCode => $unitName));
+						print_r($searchResult);
+					}
+				}
+				$stmt->close();
+				//return $searchResult;
+			} catch(mysqli_sql_exception $e) {
+				throw $e;
+				return null;
+			}
+		}
 
 		public function registerUnit($uCode, $uName, $uFaculty) {
 
@@ -220,20 +291,66 @@
 		}
 	}
 
-	class TeachingPeriod {
-		public $term;
-		public $year;
-		public $startDate;
-		public $endDate;
-	}
-
 	class UnitOffering extends Unit {
 		private $uOffID;
 		private $cUserName;
-		private $teachperiod = new TeachingPeriod;
+		private $teachperiod;
 
-		public __construct($unitCode) {
-			$stmt = $GLOBALS->['conn']->prepare("");
+		private $offerings;
+
+		// initialize the object with all unit Offerings of a unit
+		public function __construct($unitCode) {
+			$offerings = array();
+
+			$stmt = $GLOBALS['conn']->prepare("SELECT * FROM UnitOffering WHERE unitCode = ?");
+			$stmt->bind_param('s', $unitCode);
+
+			try {
+				$stmt->execute();
+				$stmt->store_result();
+				$stmt->bind_result($uOffID, $unitCode, $cUserName, $term, $year, $censusDate);
+
+				if($stmt->num_rows > 0) {
+					while($stmt->fetch()) {
+						$this->offerings['uOffID'] = $uOffID;
+						$this->offerings['unitCode'] = $unitCode;
+						$this->offerings['cUserName'] = $cUserName;
+						$this->offerings['term'] = $term;
+						$this->offerings['year'] = $year;
+						$this->offerings['censusDate'] = $censusDate;
+					}
+				}
+				$stmt->close();
+			} catch(mysqli_sql_exception $e) {
+				throw $e;
+			}
+		}
+
+		// return offerings array
+		public function getOfferings() {
+			return $this->offerings;
+		}
+
+		// add unit offering
+		public function addUnitOff($unitCode, $convenorEmail, $term, $year, $censusDate) {
+
+			$stmt = $GLOBALS['conn']->prepare("CALL TCABS_UnitOff_add(?, ?, ?, ?, ?)");
+			$stmt->bind_param("sssss", $unitCode, $convenorEmail, $term, $year, $censusDate);
+
+			try {
+				$stmt->execute();
+				echo "<script type='text/javascript'>alert('Unit Offering added successfully');</script>";
+			} catch(mysqli_sql_exception $e) {
+				throw $e;
+			}
+
+			$stmt->close();
+		}
+	}
+
+	class Enrolment {
+		public function enrolUser($userEmail, $uOffID) {
+			
 		}
 	}
 ?>
