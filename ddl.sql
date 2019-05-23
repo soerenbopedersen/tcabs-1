@@ -236,6 +236,7 @@ INSERT INTO tcabs.Users VALUES ("Daenerys", "Targaryen", "F", "041-232-3443", "d
 INSERT INTO tcabs.Users VALUES ("John", "Snow", "M", "041-233-2243", "jsnow@gmail.com", "45ee86bd96a5d5c8a34be537fa6d7703767da270"); -- pwd kinginthenorth
 INSERT INTO tcabs.Users VALUES ("Robert", "Baratheon", "M", "041-233-2263", "rbaratheon@gmail.com", "80f3008f6a58f3745d2e1fd1a674b239314274a0"); -- rulerofsevenkingdoms
 INSERT INTO tcabs.Users VALUES ("Arya", "Stark", "F", "041-233-2263", "astark@gmail.com", "7a3a83e08bd6db9ee1bebaf18e2065597150e39d"); -- pwd thereisonlyonegod
+INSERT INTO tcabs.Users VALUES ("Arya", "Stark", "F", "041-233-2263", "astark1@gmail.com", "7a3a83e08bd6db9ee1bebaf18e2065597150e39d"); -- pwd thereisonlyonegod
 
 INSERT INTO tcabs.Unit VALUES ("ICT30001", "Information Technology Project", "FSET");
 INSERT INTO tcabs.Unit VALUES ("INF30011", "Database Implementation", "FSET");
@@ -252,6 +253,7 @@ INSERT INTO tcabs.UserCat VALUES ("dtargaryen@gmail.com", "admin");
 INSERT INTO tcabs.UserCat VALUES ("dtargaryen@gmail.com", "convenor");
 INSERT INTO tcabs.UserCat VALUES ("jsnow@gmail.com", "admin");
 INSERT INTO tcabs.UserCat VALUES ("astark@gmail.com", "admin");
+INSERT INTO tcabs.UserCat VALUES ("astark1@gmail.com", "admin");
 
 
 INSERT INTO tcabs.UnitOffering VALUES (1, "ICT30001", "dtargaryen@gmail.com", "Semester 2", "2018", "2018-06-05");

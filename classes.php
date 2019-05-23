@@ -2,11 +2,6 @@
 	// Define different classes with relevant and useful functions here
 	require("db-conn.php");	// connect to database
 
-	function array_push_assoc($array, $key, $value){
-		$array[$key] = $value;
-		return $array;
-	}
-
 	class Role {
 		public $roles;
 
@@ -53,11 +48,10 @@
 
 	}
 
-	class Permission extends Role{
+	class Permission{
 		protected $permissions;
 
 		protected function __construct() {
-			Role::__construct();
 			$this->permissions = array();
 		}
 		
@@ -75,22 +69,25 @@
 				$subQuery = substr($subQuery, 0, -2);
 
 				// using subquery
-				$stmt = $GLOBALS['conn']->prepare("SELECT procName FROM Permission	
-								WHERE userType IN (?)");
-
-				$stmt->bind_param("s", $subQuery);
+				// this method wont work with prepared statement
+				$sql = "SELECT procName FROM Permission	
+								WHERE userType IN (" . $subQuery .")";
 
 				try {
-					$stmt->execute();
-					$stmt->store_result();
-					$stmt->bind_result($procname);
 
-					if($stmt->num_rows > 0) {
-						while($stmt->fetch()) {
-							echo $procname;
-							$this->permissions[$procname] = true;
-						}
-					}
+					$result = $GLOBALS['conn']->query($sql);
+
+					if($GLOBALS['conn']->error) {
+         		echo $GLOBALS['conn']->error;
+       		} else {
+						if($result->num_rows > 0) {
+							while($row = $result->fetch_assoc()) {
+								$this->permissions[$row['procName']] = true;
+          	 	}
+						} else {
+         	  	return NULL;
+         		}
+       		}
 				} catch(mysqli_sql_exception $e) {
 					echo "<script type='text/javascript'>alert('{$e}');</script>";
 				}
@@ -112,7 +109,6 @@
 		private $pwd;	// hidden to outside classes and functions
 
 		public $uRoles;
-		public $uPerms;
 
 		public function __construct() {
 			Permission::__construct();
@@ -157,7 +153,6 @@
  	   			}
 				} else {
 					return NULL;
-					exit(1);
 				}
 			}
 
@@ -167,9 +162,49 @@
 			$this->uRoles = $roleObj->roles;
 
 			// Get all the stored procedures/functions a user can access
-			//Permission::getPerms($this->uRoles);
-			//$this->uPerms = $this->permissions;
+			Permission::getPerms($this->uRoles);
+		}
 
+		public function searchUser($searchQuery) {
+		
+			$stmt = $GLOBALS['conn']->prepare("SELECT email FROM Users
+									WHERE email LIKE ? or fName LIKE ? or lName LIKE ?");
+			$stmt->bind_param('sss', $searchQuery, $searchQuery, $searchQuery);
+
+			$Users = [];
+			$row = new User;
+
+			try {
+				$stmt->execute();
+				$stmt->store_result();
+				$stmt->bind_result($email);
+
+				$i = 0;
+				if($stmt->num_rows > 0) {
+					while($stmt->fetch()) {
+
+						$row->getUser($email);
+
+						$Users[$i] = (array)[
+							"email" => $row->email,
+							"fName" => $row->fName,
+							"lName" => $row->lName,
+							"gender" => $row->gender,
+							"pNum" => $row->pNum,
+							"roles" => $row->uRoles
+						];
+
+						$i = $i +1;
+					}
+				} else {
+					return null;
+				}
+				$stmt->close();
+				return $Users;
+			} catch(mysqli_sql_exception $e) {
+				throw $e;
+				return null;
+			}
 		}
 
 		// this function can be used to get all users with a particular role

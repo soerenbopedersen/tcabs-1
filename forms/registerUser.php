@@ -38,8 +38,19 @@
 				} else if($_POST['submit'] === "bulkAddUnits") {
 			
 				// if search form submit button pressed
-				} else if($_POST['submit'] === "updateSearch") {
-			
+				} else if($_POST['submit'] === "search") {
+
+					$nUser = new User;
+					try {
+
+						// returns a multidimensional array for each user found
+						$searchResults = $nUser->searchUser("%{$_POST['searchQuery']}%");
+						print_r($searchResults);
+
+					} catch(mysqli_sql_exception $e) {
+						echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
+					}
+
 				}
 			}
 		}
