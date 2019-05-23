@@ -5,39 +5,46 @@
 		header('Location: /tcabs/login.php');
 		exit();
 	} else {
-		if($_SERVER['REQUEST_METHOD'] == 'POST') {
-			if(isset($_POST['submit'])) {
-				$unitObj = new Unit;
-				if($_POST['submit'] === "addUnit") {
-					try {
-						$unitObj->registerUnit($_POST['unitCode'], $_POST['unitName'], $_POST['unitFaculty']);
-					} catch(mysqli_sql_exception $e) {
-						echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
-					}
-				} else if($_POST['submit'] === "bulkAddUnits") {
-			
-				} else if($_POST['submit'] === "updateSearch") {
-						if($_POST['searchQuery'] == null) {
-							echo "<script type='text/javascript'>alert('Search Box empty');</script>";
-						} else {
-							try {
-								$searchResults = $unitObj->searchUnit("%{$_POST['searchQuery']}%");
-								if($searchResults == null) {
-									echo "<script type='text/javascript'>alert('Oops nothing found!');</script>";
-								} else {
-									// adding search results to frontend goes here
-									print_r($searchResults);
+
+		// check if user has permission to access the page
+		if(!$_SESSION['loggedUser']->uRoles['admin']) {
+			header('Location: /tcabs/dashboard.php');
+		} else {
+		
+			if($_SERVER['REQUEST_METHOD'] == 'POST') {
+				if(isset($_POST['submit'])) {
+					$unitObj = new Unit;
+					if($_POST['submit'] === "addUnit") {
+						try {
+							$unitObj->registerUnit($_POST['unitCode'], $_POST['unitName'], $_POST['unitFaculty']);
+						} catch(mysqli_sql_exception $e) {
+							echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
+						}
+					} else if($_POST['submit'] === "bulkAddUnits") {
+				
+					} else if($_POST['submit'] === "search") {
+							if($_POST['searchQuery'] == null) {
+								echo "<script type='text/javascript'>alert('Search Box empty');</script>";
+							} else {
+								try {
+									$searchResults = $unitObj->searchUnit("%{$_POST['searchQuery']}%");
+									if($searchResults == null) {
+										echo "<script type='text/javascript'>alert('Oops nothing found!');</script>";
+									} else {
+										// adding search results to frontend goes here
+										print_r($searchResults);
+									}
+								} catch(mysqli_sql_exception $e) {
+									echo $e->getMessage();
+									exit();
+									echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
 								}
-							} catch(mysqli_sql_exception $e) {
-								echo $e->getMessage();
-								exit();
-								echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
 							}
 						}
-				} else if($_POST['submit'] === "deleteSearch") {
-			
+					}
 				}
 			}
+
 		}
 	}
 ?>
@@ -68,9 +75,6 @@
   		</li>
     	<li class="nav-item">
     		<a class="nav-link" data-toggle="tab" href="#menu2">Update</a>
-  		</li>
-      <li class="nav-item">
-    		<a class="nav-link" data-toggle="tab" href="#menu3">Delete</a>
   		</li>
 		</ul>
 
@@ -108,7 +112,7 @@
 			<!-- Tab 3 -->
   		<div class="tab-pane container active" id="menu2">
 				<form method="POST" class="was-validated"><br/>
-  	 		 	<p class="h4 mb-4 text-center">Update User</p>
+  	 		 	<p class="h4 mb-4 text-center">Update/Delete Unit</p>
 				<!--	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 					<script type="text/javascript">
 						$(document).ready(function(){
@@ -135,13 +139,13 @@
 					</script>-->
 					<div class="search-box">
 						<input type="text" name="searchQuery" autocomplete="off" placeholder="Enter Unit Code or Name" />
-  					<button class="btn btn-primary" name="submit" value="updateSearch">Search</button>
+  					<button class="btn btn-primary" name="submit" value="search">Search</button>
 						<div class="result"></div>
 					</div>
 				</form>
 			</div>
 
-			<!-- Tab 4 -->
+<!--
   		<div class="tab-pane container active" id="menu3">
 				<form action="registerUnits.php" method ="post" class="was-validated"><br>
   	 		 	<p class="h4 mb-4 text-center">Delete User</p>
@@ -177,6 +181,7 @@
 				</div>
 			</form>
 		</div>
+-->
 
 		</div>
 	</body>

@@ -1,56 +1,62 @@
-<!-- The main page of the system will show relevant functionality according to user role -->
 <?php
 	require_once("../classes.php");
 	session_start();
 	if (!isset($_SESSION['logged_in'])) {
 		header('Location: /tcabs/login.php');
 	} else {
-		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			// if button presses with name attribute = submit
-			if(isset($_POST['submit'])) {
+		// check user permission to access the page(admin)
+		if(!$_SESSION['loggedUser']->uRoles['admin']) {
+			header('Location: /tcabs/dashboard.php');
+		} else {
 
-				// if Add Single User submit button pressed
-				if($_POST['submit'] === "addUser") {
+			// if there was a post request
+			if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-					// validate if check boxes are ticked and no combination with student
-					if(!isset($_POST['roles'])) {
-						echo "<script type='text/javascript'>alert('No roles selected');</script>";
-					} else {
+				// if button presses with name attribute = submit
+				if(isset($_POST['submit'])) {
+
+					// if Add Single User submit button pressed
+					if($_POST['submit'] === "addUser") {
+
+						// validate if check boxes are ticked and no combination with student
+						if(!isset($_POST['roles'])) {
+							echo "<script type='text/javascript'>alert('No roles selected');</script>";
+						} else {
+							$nUser = new User;
+							try {
+								$nUser->registerUser(
+									$_POST['fName'],
+									$_POST['lName'],
+									$_POST['gender'],
+									$_POST['pNum'],
+									$_POST['email'],
+									$_POST['pwd'],
+									$_POST['roles']
+								);
+							} catch(mysqli_sql_exception $e) {
+								echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
+							}
+						}
+
+					// if bulk import form button pressed
+					} else if($_POST['submit'] === "bulkAddUnits") {
+			
+					// if search form submit button pressed
+					} else if($_POST['submit'] === "search") {
+
 						$nUser = new User;
 						try {
-							$nUser->registerUser(
-								$_POST['fName'],
-								$_POST['lName'],
-								$_POST['gender'],
-								$_POST['pNum'],
-								$_POST['email'],
-								$_POST['pwd'],
-								$_POST['roles']
-							);
+
+							// returns a multidimensional array for each user found
+							$searchResults = $nUser->searchUser("%{$_POST['searchQuery']}%");
+							print_r($searchResults);
 
 						} catch(mysqli_sql_exception $e) {
 							echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
 						}
+
 					}
-
-				// if bulk import form button pressed
-				} else if($_POST['submit'] === "bulkAddUnits") {
-			
-				// if search form submit button pressed
-				} else if($_POST['submit'] === "search") {
-
-					$nUser = new User;
-					try {
-
-						// returns a multidimensional array for each user found
-						$searchResults = $nUser->searchUser("%{$_POST['searchQuery']}%");
-						print_r($searchResults);
-
-					} catch(mysqli_sql_exception $e) {
-						echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
-					}
-
 				}
 			}
 		}
@@ -74,12 +80,6 @@
 			<h2>User Administration</h2><h2-date><?php echo date('d F, Y (l)'); ?></h2-date><br>
 		<div>
 		
-		<?php 
-		//print_r($_SESSION['roles']);
-		//foreach($_SESSION['roles'] as $key => $value){
-							//if($key=='admin') {
-		?>
-
 		<!-- Nav tabs -->
 		<ul class="nav nav-tabs">
   		<li class="nav-item">
@@ -90,9 +90,6 @@
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" data-toggle="tab" href="#menu2">Update</a>
-			</li>
-      <li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#menu3">Delete</a>
 			</li>
 		</ul>
 
