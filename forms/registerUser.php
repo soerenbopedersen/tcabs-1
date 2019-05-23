@@ -7,24 +7,39 @@
 	} else {
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			// validate if check boxes are ticked and no combination with student
-			if(!isset($_POST['roles'])) {
-				echo "<script type='text/javascript'>alert('No roles selected');</script>";
-			} else {
-				$nUser = new User;
-				try {
-					$nUser->registerUser(
-						$_POST['fName'],
-						$_POST['lName'],
-						$_POST['gender'],
-						$_POST['pNum'],
-						$_POST['email'],
-						$_POST['pwd'],
-						$_POST['roles']
-					);
+			// if button presses with name attribute = submit
+			if(isset($_POST['submit'])) {
 
-				} catch(mysqli_sql_exception $e) {
-					echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
+				// if Add Single User submit button pressed
+				if($_POST['submit'] === "addUser") {
+
+					// validate if check boxes are ticked and no combination with student
+					if(!isset($_POST['roles'])) {
+						echo "<script type='text/javascript'>alert('No roles selected');</script>";
+					} else {
+						$nUser = new User;
+						try {
+							$nUser->registerUser(
+								$_POST['fName'],
+								$_POST['lName'],
+								$_POST['gender'],
+								$_POST['pNum'],
+								$_POST['email'],
+								$_POST['pwd'],
+								$_POST['roles']
+							);
+
+						} catch(mysqli_sql_exception $e) {
+							echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
+						}
+					}
+
+				// if bulk import form button pressed
+				} else if($_POST['submit'] === "bulkAddUnits") {
+			
+				// if search form submit button pressed
+				} else if($_POST['submit'] === "updateSearch") {
+			
 				}
 			}
 		}
@@ -103,19 +118,19 @@
     				<label class="checkbox-inline"><input type="checkbox" name="roles[]" value="student"> Student</label>
     			</div>
 				</div>
-  			<button class="btn btn-info my-4 btn-block" type="submit" name="singleUser" value="submit">Register Unit</button>
+  			<button class="btn btn-info my-4 btn-block" type="submit" name="submit" value="addUser">Register Unit</button>
 			</form>
 		</div>
 		
 		<!-- Tab 2 -->	
   	<div class="tab-pane container fade" id="menu1">
-  		<form action="registerUser.php" method ="post" class="was-validated"><br>
+  		<form action="registerUser.php" method ="POST" class="was-validated"><br>
   	  	<p class="h4 mb-4 text-center">Bulk Import via CSV</p>
   			<div class="form-group">
     			<label for="csvFileForm">Please choose a CSV file to upload</label>
    			 	<input type="file" class="form-control-file" id="csvFileForm">
   			</div>
-  			<button class="btn btn-info my-4 btn-block" type="submit" name="csv" value="submit">Register Units</button>
+  			<button class="btn btn-info my-4 btn-block" type="submit" name="submit" value="bulkImport">Register Units</button>
 			</form>
 		</div>
 		
@@ -123,8 +138,8 @@
 		<!-- Tab 3 -->
 		<div class="tab-pane container fade" id="menu2">
 			<form action="registerUser.php" method ="post" class="was-validated"><br>
-  	  	<p class="h4 mb-4 text-center">Update User</p>
-
+  	  	<p class="h4 mb-4 text-center">Update/Delete User</p>
+<!--
 				<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 				<script type="text/javascript">
 					$(document).ready(function(){
@@ -149,14 +164,16 @@
 			    	});
 					});
 				</script>
+-->
 				<div class="search-box">
-					<input type="text" autocomplete="off" placeholder="Search User..." />
+					<input type="text" name="searchQuery" autocomplete="off" placeholder="Enter User Email or Name" />
+  				<button class="btn btn-primary" name="submit" value="search">Search</button>
 					<div class="result"></div>
 				</div>
 			</form>
 		</div>
 
-		<!-- Tab 4 -->
+<!--
 		<div class="tab-pane container fade" id="menu3"><br>
 			<form action="registerUser.php" method ="post" class="was-validated"><br>
   	  	<p class="h4 mb-4 text-center">Delete User</p>
@@ -192,6 +209,7 @@
 				</div>
 			</form>
 		</div>
+-->
 	</div>
   
   		<?php  //} else { ?>

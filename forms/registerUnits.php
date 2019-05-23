@@ -21,10 +21,11 @@
 							echo "<script type='text/javascript'>alert('Search Box empty');</script>";
 						} else {
 							try {
-								$searchResults = $unitObj->searchUnit("{$_POST['searchQuery']}%");
+								$searchResults = $unitObj->searchUnit("%{$_POST['searchQuery']}%");
 								if($searchResults == null) {
 									echo "<script type='text/javascript'>alert('Oops nothing found!');</script>";
 								} else {
+									// adding search results to frontend goes here
 									print_r($searchResults);
 								}
 							} catch(mysqli_sql_exception $e) {
