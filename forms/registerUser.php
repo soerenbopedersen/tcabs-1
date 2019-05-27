@@ -50,7 +50,6 @@
 
 							// returns a multidimensional array for each user found
 							$searchResults = $nUser->searchUser("%{$_POST['searchQuery']}%");
-							print_r($searchResults);
 
 						} catch(mysqli_sql_exception $e) {
 							echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
@@ -83,13 +82,13 @@
 		<!-- Nav tabs -->
 		<ul class="nav nav-tabs">
   		<li class="nav-item">
-    		<a class="nav-link active" data-toggle="tab" href="#home">Add</a>
+    		<a class="nav-link <?php if((isset($_POST['submit']) && $_POST['submit'] == 'addUser') || $_SERVER['REQUEST_METHOD'] == 'GET') { echo 'active';} ?>" data-toggle="tab" href="#home">Add</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#menu1">Bulk Import via CSV</a>
+				<a class="nav-link <?php if(isset($_POST['submit']) && $_POST['submit'] == 'bulkImport') { echo 'active';} ?>" data-toggle="tab" href="#menu1">Bulk Import via CSV</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" data-toggle="tab" href="#menu2">Update</a>
+				<a class="nav-link <?php if(isset($_POST['submit']) && $_POST['submit'] == 'search') { echo 'active';} ?>" data-toggle="tab" href="#menu2">Search</a>
 			</li>
 		</ul>
 
@@ -97,7 +96,7 @@
 		<div class="tab-content">
 
 		<!-- Tab 1 -->
-  	<div class="tab-pane container active" id="home">
+  	<div class="tab-pane container <?php if((isset($_POST['submit']) && $_POST['submit'] == 'addUser') || $_SERVER['REQUEST_METHOD'] == 'GET') { echo 'active show';} ?>" id="home">
 			<form action="registerUser.php" method ="post" class="was-validated"><br>
   		  <p class="h4 mb-4 text-center">Add User</p>
 				<input type="text" id="fName" name="fName" class="form-control" placeholder="First Name" required><br>
@@ -131,7 +130,7 @@
 		</div>
 		
 		<!-- Tab 2 -->	
-  	<div class="tab-pane container fade" id="menu1">
+  	<div class="tab-pane container fade <?php if(isset($_POST['submit']) && $_POST['submit'] == 'bulkImport') { echo 'active show';} ?>" id="menu1">
   		<form action="registerUser.php" method ="POST" class="was-validated"><br>
   	  	<p class="h4 mb-4 text-center">Bulk Import via CSV</p>
   			<div class="form-group">
@@ -144,7 +143,7 @@
 		
 		
 		<!-- Tab 3 -->
-		<div class="tab-pane container fade" id="menu2">
+		<div class="tab-pane container fade <?php if(isset($_POST['submit']) && $_POST['submit'] == 'search') { echo 'active show';} ?>" id="menu2">
 			<form action="registerUser.php" method ="post" class="was-validated"><br>
   	  	<p class="h4 mb-4 text-center">Update/Delete User</p>
 				<div class="search-box">
@@ -152,7 +151,7 @@
   				<button class="btn btn-primary" name="submit" value="search">Search</button>
 					<div class="result"></div>
 				</div>
-			</form>
+			</form><br>
 
 			<!-- Show Search Results -->
 			<?php 
@@ -170,7 +169,6 @@
     				</tr>
 
 						<?php 
-							// print_r($searchResults);
 
 							foreach($searchResults as $key => $value) {
 								$name = $value['fName'] . $value['lName'];
@@ -187,7 +185,7 @@
 						<?php  }?>
 
 					</table>
-				</form>
+				</form><br>
 			</div>
 			<?php  }?>
   	<?php include "../views/footer.php";  ?>  

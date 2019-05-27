@@ -274,6 +274,32 @@
 
 		protected $unitCode;
 
+		public function getUnit($unitCode) {
+
+			$stmt = $GLOBALS['conn']->prepare("SELECT * FROM Unit WHERE unitCode = ?;");
+			$stmt->bind_param('s', $unitCode);
+
+			try {
+				$stmt->execute();
+				$stmt->store_result();
+				$stmt->bind_result($uCode, $uName, $uFaculty);
+
+				if($stmt->num_rows > 0) {
+					while($stmt->fetch()) {
+						$this->unitName = $uName;
+						$this->unitCode = $uCode;
+						$this->unitFaculty = $uFaculty;
+					}
+				} else {
+					return null;
+				}
+			} catch(mysqli_sql_exception $e) {
+				return null;
+				throw $e;
+			}
+
+		}
+
 		public function searchUnit($searchQuery) {
 			$searchResult = array();
 
@@ -281,18 +307,31 @@
 									WHERE unitCode LIKE ? or unitName LIKE ?");
 			$stmt->bind_param('ss', $searchQuery, $searchQuery);
 
+			$units = [];
+			$row = new Unit;
+
 			try {
 				$stmt->execute();
 				$stmt->store_result();
 				$stmt->bind_result($unitCode, $unitName);
 
+				$i = 0;
 				if($stmt->num_rows > 0) {
 					while($stmt->fetch()) {
-						$searchResult[$unitCode] = $unitName;
+
+						$row->getUnit($unitCode);
+
+						$units[$i] = (array)[
+							"unitCode" => $row->unitCode,
+							"unitName" => $row->unitName,
+							"unitFaculty" => $row->unitFaculty
+						];
+
+						$i = $i +1;
 					}
 				}
 				$stmt->close();
-				return $searchResult;
+				return $units;
 			} catch(mysqli_sql_exception $e) {
 				throw $e;
 				return null;

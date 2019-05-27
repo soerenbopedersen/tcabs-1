@@ -66,13 +66,13 @@
 
 		<ul class="nav nav-tabs">
   		<li class="nav-item">
-    		<a class="nav-link active" data-toggle="tab" href="#home">Add</a>
+    		<a class="nav-link <?php if((isset($_POST['submit']) && $_POST['submit'] == 'addUnit') || $_SERVER['REQUEST_METHOD'] == 'GET') { echo 'active';} ?>" data-toggle="tab" href="#home">Add</a>
   		</li>
-  		<li class="nav-item">
-    		<a class="nav-link" data-toggle="tab" href="#menu1">Bulk Import via CSV</a>
+  		<li class="nav-item>">
+				<a class="nav-link <?php if(isset($_POST['submit']) && $_POST['submit'] == 'bulkAddUnits') { echo 'active';} ?>" data-toggle="tab" href="#menu1">Bulk Import via CSV</a>
   		</li>
     	<li class="nav-item">
-    		<a class="nav-link" data-toggle="tab" href="#menu2">Update</a>
+    		<a class="nav-link <?php if(isset($_POST['submit']) && $_POST['submit'] == 'search') { echo 'active';} ?>" data-toggle="tab" href="#menu2">Search</a>
   		</li>
 		</ul>
 
@@ -80,7 +80,7 @@
 		<div class="tab-content">
 
 			<!-- Tab 1 -->
-  		<div class="tab-pane container active" id="home">
+  		<div class="tab-pane container <?php if((isset($_POST['submit']) && $_POST['submit'] == 'addUnit') || $_SERVER['REQUEST_METHOD'] == 'GET') { echo 'active show';} ?>" id="home">
 				<form action="registerUnits.php" method ="post" class="was-validated"><br/>
   	  		<p class="h4 mb-4 text-center">Add Unit into TCABS</p>
 					<input type="text" id="unitCode" name="unitCode" class="form-control" placeholder="Unit Code" required><br>
@@ -96,7 +96,7 @@
 			</div>
 
 			<!-- Tab 2 -->
-  		<div class="tab-pane container fade" id="menu1">
+  		<div class="tab-pane container fade <?php if(isset($_POST['submit']) && $_POST['submit'] == 'bulkAddUnits') { echo 'active show';} ?>" id="menu1">
 				<form action="registerUnits.php" method ="post" class="was-validated"><br/>
   	  		<p class="h4 mb-4 text-center">Bulk Import</p>
   				<div class="form-group">
@@ -108,79 +108,52 @@
 			</div>
 
 			<!-- Tab 3 -->
-  		<div class="tab-pane container fade" id="menu2">
+  		<div class="tab-pane container fade <?php if(isset($_POST['submit']) && $_POST['submit'] == 'search') { echo 'active show';} ?>" id="menu2">
 				<form method="POST" class="was-validated"><br/>
   	 		 	<p class="h4 mb-4 text-center">Update/Delete Unit</p>
-				<!--	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-					<script type="text/javascript">
-						$(document).ready(function(){
-							$('.search-box input[type="text"]').on("keyup input", function(){
-								/* Get input value on change */
-								var inputVal = $(this).val();
-								var resultDropdown = $(this).siblings(".result");
-			        	if(inputVal.length){
-			        		$.get("backend-search.php", {term: inputVal}).done(function(data){
-			          		// Display the returned data in browser
-										resultDropdown.html(data);
-			          	});
-			        	} else{
-			          	resultDropdown.empty();
-			        	}
-			    		});
-
-			    		// Set search input value on click of result item
-			    		$(document).on("click", ".result p", function(){
-			    			$(this).parents(".search-box").find('input[type="text"]').val($(this).text());
-			    			$(this).parent(".result").empty();
-			    		});
-						});
-					</script>-->
 					<div class="search-box">
 						<input type="text" name="searchQuery" autocomplete="off" placeholder="Enter Unit Code or Name" />
   					<button class="btn btn-primary" name="submit" value="search">Search</button>
 						<div class="result"></div>
 					</div>
-				</form>
+				</form><br>
+
+				<!-- Show Search Results -->
+			<?php 
+				if(isset($_POST['submit']) && $_POST['submit'] == 'search') {
+			?>		
+
+			<div>
+				<form action="registerUser.php" method="post">
+					<table style="width: 100%;">
+						<tr>
+    					<th style="width: 40%;">Unit Code</th>
+							<th style="width: 35%;">Unit Name</th>
+							<th style="width: 15%;"></th>
+    					<th style="width: 15%;"></th>
+    				</tr>
+
+						<?php 
+
+							foreach($searchResults as $key => $value) {
+								$name = $value['unitCode'];
+								$email = $value['unitName'];
+						?>
+
+						<tr style="border-top: 1px solid lightgrey;">
+							<td><?php echo $name;?></td>
+							<td><?php echo $email;?></td>
+							<td><button type="submit" class="btn btn-primary" name="update" value="<?php echo $resultEmail;?>" >Update</button></td>
+							<td><button type="submit" class="btn btn-danger" name="delete" value="<?php echo $resultEmail;?>" >Delete</button></td>
+						</tr>
+
+						<?php  }?>
+
+					</table>
+				</form><br>
 			</div>
-
-<!--
-  		<div class="tab-pane container fade" id="menu3">
-				<form action="registerUnits.php" method ="post" class="was-validated"><br>
-  	 		 	<p class="h4 mb-4 text-center">Delete User</p>
-
-					<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-					<script type="text/javascript">
-					$(document).ready(function(){
-						$('.search-box input[type="text"]').on("keyup input", function(){
-							/* Get input value on change */
-							var inputVal = $(this).val();
-							var resultDropdown = $(this).siblings(".result");
-							if(inputVal.length){
-								$.get("backend-search.php", {term: inputVal}).done(function(data){
-									// Display the returned data in browser
-									resultDropdown.html(data);
-								});
-							} else{
-								resultDropdown.empty();
-							}
-						});
-
-						// Set search input value on click of result item
-						$(document).on("click", ".result p", function(){
-							$(this).parents(".search-box").find('input[type="text"]').val($(this).text());
-							$(this).parent(".result").empty();
-						});
-					});
-					</script>
-					<div class="search-box">
-						<input type="text" autocomplete="off" placeholder="Search Unit..." />
-  					<button class="btn btn-primary" type="submit" name="submit" value="updateSearch">Search</button>
-					<div class="result"></div>
-				</div>
-			</form>
-		</div>
--->
-
+			<?php  }?>
+			</div>
 		</div>
 	</body>
   <?php include "../views/footer.php";  ?>  
