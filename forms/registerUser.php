@@ -147,86 +147,49 @@
 		<div class="tab-pane container fade" id="menu2">
 			<form action="registerUser.php" method ="post" class="was-validated"><br>
   	  	<p class="h4 mb-4 text-center">Update/Delete User</p>
-<!--
-				<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-				<script type="text/javascript">
-					$(document).ready(function(){
-			    	$('.search-box input[type="text"]').on("keyup input", function(){
-			        /* Get input value on change */
-			        var inputVal = $(this).val();
-			        var resultDropdown = $(this).siblings(".result");
-			        if(inputVal.length){
-			        	$.get("backend-search.php", {term: inputVal}).done(function(data){
-			          	// Display the returned data in browser
-									resultDropdown.html(data);
-			          });
-			        } else{
-			          resultDropdown.empty();
-			        }
-			    	});
-
-			    	// Set search input value on click of result item
-			    	$(document).on("click", ".result p", function(){
-			    		$(this).parents(".search-box").find('input[type="text"]').val($(this).text());
-			    		$(this).parent(".result").empty();
-			    	});
-					});
-				</script>
--->
 				<div class="search-box">
 					<input type="text" name="searchQuery" autocomplete="off" placeholder="Enter User Email or Name" />
   				<button class="btn btn-primary" name="submit" value="search">Search</button>
 					<div class="result"></div>
 				</div>
 			</form>
-		</div>
 
-<!--
-		<div class="tab-pane container fade" id="menu3"><br>
-			<form action="registerUser.php" method ="post" class="was-validated"><br>
-  	  	<p class="h4 mb-4 text-center">Delete User</p>
+			<!-- Show Search Results -->
+			<?php 
+				if(isset($_POST['submit']) && $_POST['submit'] == 'search') {
+			?>		
 
-				<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-				<script type="text/javascript">
-				$(document).ready(function(){
-					$('.search-box input[type="text"]').on("keyup input", function(){
-						/* Get input value on change */
-						var inputVal = $(this).val();
-						var resultDropdown = $(this).siblings(".result");
-						if(inputVal.length){
-							$.get("backend-search.php", {term: inputVal}).done(function(data){
-								// Display the returned data in browser
-								resultDropdown.html(data);
-							});
-						} else{
-							resultDropdown.empty();
-						}
-					});
-
-					// Set search input value on click of result item
-					$(document).on("click", ".result p", function(){
-						$(this).parents(".search-box").find('input[type="text"]').val($(this).text());
-						$(this).parent(".result").empty();
-					});
-				});
-				</script>
-				<div class="search-box">
-					<input type="text" autocomplete="off" placeholder="Search User..." />
-					<input type="submit" class="btn btn-primary" name="deleteSubmit" value="DELETE">
-					<div class="result"></div>
-				</div>
-			</form>
-		</div>
--->
-	</div>
-  
-  		<?php  //} else { ?>
-		
-		<!--	<h2>Admin Function</h2>
 			<div>
-			<p>Sorry, you do not have access to this function</p>
-			</div>-->
-		<?php  //} } ?>
+				<form action="registerUser.php" method="post">
+					<table style="width: 100%;">
+						<tr>
+    					<th style="width: 40%;">Name</th>
+							<th style="width: 35%;">Email</th>
+							<th style="width: 15%;"></th>
+    					<th style="width: 15%;"></th>
+    				</tr>
+
+						<?php 
+							// print_r($searchResults);
+
+							foreach($searchResults as $key => $value) {
+								$name = $value['fName'] . $value['lName'];
+								$email = $value['email'];
+						?>
+
+						<tr style="border-top: 1px solid lightgrey;">
+							<td><?php echo $name;?></td>
+							<td><?php echo $email;?></td>
+							<td><button type="submit" class="btn btn-primary" name="update" value="<?php echo $resultEmail;?>" >Update</button></td>
+							<td><button type="submit" class="btn btn-danger" name="delete" value="<?php echo $resultEmail;?>" >Delete</button></td>
+						</tr>
+
+						<?php  }?>
+
+					</table>
+				</form>
+			</div>
+			<?php  }?>
   	<?php include "../views/footer.php";  ?>  
 	</body>
 </html>
