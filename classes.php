@@ -316,15 +316,21 @@
 	}
 
 	class UnitOffering extends Unit {
-		private $uOffID;
-		private $cUserName;
-		private $teachperiod;
+		protected $uOffID;
+		protected $cUserName;
+		protected $term;
+		protected $year;
+		protected $censusDate;
 
-		private $offerings;
+		protected $offerings;
 
 		// initialize the object with all unit Offerings of a unit
-		public function __construct($unitCode) {
+		public function __construct() {
 			$offerings = array();
+		}
+
+		// return offerings array
+		public function getOfferings($unitCode) {
 
 			$stmt = $GLOBALS['conn']->prepare("SELECT * FROM UnitOffering WHERE unitCode = ?");
 			$stmt->bind_param('s', $unitCode);
@@ -344,15 +350,11 @@
 						$this->offerings['censusDate'] = $censusDate;
 					}
 				}
+				print_r($this->offerings);
 				$stmt->close();
 			} catch(mysqli_sql_exception $e) {
 				throw $e;
 			}
-		}
-
-		// return offerings array
-		public function getOfferings() {
-			return $this->offerings;
 		}
 
 		// add unit offering
@@ -372,9 +374,33 @@
 		}
 	}
 
-	class Enrolment {
-		public function enrolUser($userEmail, $uOffID) {
+	class Enrolment extends UnitOffering{
+		public $enrolmentID;
+		public $sUserName;
+
+		public function enrolUser($userEmail, $unitCode, $term, $year) {
 			
+			try {
+				$unitOffObj = new UnitOffering();
+				$this->offerings = $unitOffObj->getOfferings($unitCode);
+
+				print_r($this->offerings);
+			} catch(mysqli_sql_exception $e) {
+				throw $e;
+			}
+
+			//$stmt = $GLOBALS['conn']->prepare("CALL TCABS_enrolment_add(?, ?, ?, ?)");
+			//$stmt->bind_param("ssss", $userEmail, $unitCode, $term, $year);
+			/*
+			try {
+				$stmt->execute();
+				echo "<script type='text/javascript'>alert('Unit Offering added successfully');</script>";
+			} catch(mysqli_sql_exception $e) {
+				throw $e;
+			}
+			 */
+
+			//$stmt->close();
 		}
 	}
 ?>
