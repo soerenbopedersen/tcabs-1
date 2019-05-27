@@ -1,5 +1,6 @@
  -- SET SQL_SAFE_UPDATES = 0;
  -- SET GLOBAL log_bin_trust_function_creators = 1;
+ -- SET autocommit=0;
 DROP DATABASE tcabs;
 CREATE DATABASE tcabs;
 
@@ -208,13 +209,13 @@ Create Table StudentPeerAssessment (
 
 Create Table SPAInstence (
 	SPAInstenceID			int				auto_increment,
-    TeamMemberID			int				not null,
+    UnitOfferingID			int				not null,
     SPAID					int 			not null,
     AssessmentDate			date			not null,
     
 	primary key (SPAInstenceID),
     Foreign Key (SPAID) REFERENCES StudentPeerAssessment(SPAID),
-    Foreign Key (TeamMemberID) REFERENCES TeamMember(TeamMemberID)
+    Foreign Key (UnitOfferingID) REFERENCES UnitOffering(UnitOfferingID)
 );
 
 Create Table PeerAssessmentFeild (
@@ -411,26 +412,26 @@ CREATE PROCEDURE TCABS_User_register(IN fName VARCHAR(255), IN lName VARCHAR(255
 	END// 
 DELIMITER ;
 
-/*
+
 -- adding user actions. You should initalize with TCABSCreatNewUser if you are creating a new user
 -- Create new user sets user Email (identification) and user Password
--- call tcabs.TCABSUSERCreateNewUser("Example@hotmail.com" , 12345);
+call tcabs.TCABSUSERCreateNewUser("Example@hotmail.com" , 12345);
 
 -- Set User firstname updates users first name from what it was before to new name via the Email identifier
---call tcabs.TCABSUSERSetUserFirstName("Example@hotmail.com" , "Billy");
+call tcabs.TCABSUSERSetUserFirstName("Example@hotmail.com" , "Billy");
 
 -- Set User Lastname updates users Last name from what it was before to new name via the Email identifier
---call tcabs.TCABSUSERSetUserLastName("Example@hotmail.com" , "Bobington");
+call tcabs.TCABSUSERSetUserLastName("Example@hotmail.com" , "Bobington");
 
 -- Set User Gender updates users Gender from what it was before to new name via the Email identifier currently there is minimal checks for feild
---call tcabs.TCABSUSERSetUserGender("Example@hotmail.com" , "Male");
+call tcabs.TCABSUSERSetUserGender("Example@hotmail.com" , "Male");
 
 -- set User Phone updates their phone number from what it was before to new name via the Email identifier. The phone number must follow ###-###-#### pattern
---call tcabs.TCABSUSERSetUserPhone("Example@hotmail.com" , "041-144-7897");
+call tcabs.TCABSUSERSetUserPhone("Example@hotmail.com" , "041-144-7897");
 
---call tcabs.TCABSUSERCreateNewUser("BestExample@hotmail.com" , 12345);
---call tcabs.TCABSUSERCreateNewUser("Best@Supervisor.com" , 12223);
-*/
+call tcabs.TCABSUSERCreateNewUser("BestExample@hotmail.com" , 12345);
+call tcabs.TCABSUSERCreateNewUser("Best@Supervisor.com" , 12223);
+
  
 DELIMITER //
 create PROCEDURE TCABSUNITAddnewunit( in NewUnitcode varchar(10), in NewUnitname varchar(100))
@@ -523,14 +524,14 @@ CREATE PROCEDURE TCABS_Unit_register(IN uCode VARCHAR(10), IN uName VARCHAR(100)
 	END// 
 DELIMITER ;
 
-/*
+
  -- adding new unit to available subjects
  -- you should initalise with Addnewunit by providing the new units code which is a 3 letter prefix followed by 5 numbers. Then you provide the units name which doesn't contain numbers
 call TCABSUNITAddnewunit("ICT30002", "Information Technology Project");
 call TCABSUNITAddnewunit("ICT30003", "Information Technology Assignment");
 -- this sets the original Faculty name to the new faculty name which doesn't contain numbers, utalising the unit code as its id
 call TCABSUNITSetNewFacultyName("ICT30002", "Buisnesses and Law");
-*/
+
  
 DELIMITER //
 create Procedure TCABSUserCatAssignUserARole(in UserEmail varchar(255), in RoleName varchar(255))
@@ -558,7 +559,7 @@ create Procedure TCABSUserCatAssignUserARole(in UserEmail varchar(255), in RoleN
 	END //
  DELIMITER ;
 
-/*
+
  -- User Cat
  -- assigns the User with the email Example@hotmail.com to the Role of testerRole
  call TCABSUserCatAssignUserARole("Example@hotmail.com", "student");
@@ -566,7 +567,7 @@ create Procedure TCABSUserCatAssignUserARole(in UserEmail varchar(255), in RoleN
  call TCABSUserCatAssignUserARole("jsnow@gmail.com", "convenor");
   call TCABSUserCatAssignUserARole("dtargaryen@gmail.com", "supervisor");
   call TCABSUserCatAssignUserARole("Best@Supervisor.com", "supervisor");
-*/
+
 
 DELIMITER //
 create Procedure TCABSValidateDate(in checkdate varchar(255))
@@ -618,7 +619,7 @@ create Procedure TCABSUNITOFFERINGGetKey(in OfferedUnitID Varchar(255), in Offer
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "values have not been entered into the feilds";
         end if;
 		select unitOfferingID into ValuesunitOfferingID from UnitOffering where unitCode = OfferedUnitID and term = Offeredterm and year = Offeredyear;
-        
+       
         if (ValuesunitOfferingID is null) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Unknown Unit code, term and year combination ";
 		end if;
@@ -634,6 +635,7 @@ create Procedure TCABSUNITOFFERINGSetCensusDate(in OfferedUnitID Varchar(255), i
         end if;
         call TCABSUNITOFFERINGGetKey(OfferedUnitID,Offeredterm,Offeredyear,@ValuesunitOfferingID);
         call TCABSUNITOFFERINGValidateCenDate(@ValuesunitOfferingID, OfferedCencusdate);
+        
         update tcabs.UnitOffering set censusDate = STR_TO_DATE(OfferedCencusdate, '%Y-%m-%d') where unitOfferingID = @ValuesunitOfferingID; 
 	END //
 DELIMITER ;
@@ -664,36 +666,26 @@ create Procedure TCABSUNITOFFERINGSetConvenor(in ConvnorEmail varchar(255), in O
 		if (char_length(ConvnorEmail) <= 1) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "values have not been entered into the email feild";
         end if;
+        
 		 call TCABSUNITOFFERINGGetKey(OfferedUnitID, Offeredterm, Offeredyear, @ValuesunitOfferingID);
+          
         if ((select count(*) from Users where email = ConvnorEmail) <> 1) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Entered Email is not found";
         end if;
-        if ((select usertype from UserCat where email = ConvnorEmail) <> "convenor") then
+        
+        if ((select count(*) from UserCat where email = ConvnorEmail and usertype = "convenor") <> 1) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Entered User Does not have the role of convenor";
         end if;
+        
         if ((select count(*) from OfferingStaff where Username = ConvnorEmail and unitOfferingID = @ValuesunitOfferingID) <> 1) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Entered user isn't set as a staff member for this offering";
         end if;
+        
         update tcabs.UnitOffering set cUserName = ConvnorEmail where unitOfferingID = @ValuesunitOfferingID; 
 	END //
 DELIMITER ;
 
 
-DELIMITER //
-CREATE PROCEDURE TCABS_UnitOff_add(IN unitCode Varchar(10), IN convenorEmail varchar(255), IN term varchar(10), IN year varchar(10), IN censusDate varchar(255))
-	BEGIN
-		-- I keep getting error -subquery returns more than one row
-		DECLARE EXIT HANDLER FOR 45000 ROLLBACK;
-
-		START TRANSACTION;
-			CALL tcabs.TCABSUNITOFFERINGAddNewOffering(unitCode, term, year);
-			CALL tcabs.TCABSUNITOFFERINGSetCensusDate(unitCode, term, year, censusDate);
-			CALL tcabs.TCABSUNITOFFERINGSetConvenor(convenorEmail, unitCode, term, year);
-		COMMIT;
-	END// 
-DELIMITER ;
-
-/*
  -- add unit offering 
  -- must initalise new unit offering with Add new offering. Pass in a matching Subject code and a matching Offering term and Offering year combo
  call TCABSUNITOFFERINGAddNewOffering("ICT30002", "Semester 1", "2019");
@@ -705,7 +697,8 @@ DELIMITER ;
  call TCABSUNITOFFERINGSetCensusDate("ICT30002", "Semester 1", "2019","2019-6-03");
  call TCABSUNITOFFERINGSetCensusDate("ICT30003", "Semester 1", "2019","2019-6-03");
  -- additional functionality called TCABSUNITOFFERINGSetConvenor after Add new TCABSOFFERINGSTAFFAddOfferingStaff
- */
+ 
+
 
           DELIMITER //
 create Procedure TCABSENROLMENTAddNewEnrolment(in NewEnrolUser varchar(255),in SelectedUnitCode varchar(255), in SelectedOfferingterm varchar(255), in SelectedOfferingyear varchar(255))
@@ -957,7 +950,37 @@ create Procedure TCABSOFFERINGSTAFFGetOfferingStaffKey(in UserEmail varchar(255)
  -- Unit offering Continued..
  -- sets user with entered email to the unit offering convenor if they possess the role of convenor and resgistored as an offering staff member
 call TCABSUNITOFFERINGSetConvenor("jsnow@gmail.com","ICT30002", "Semester 1", "2019");
+
+DELIMITER //
+CREATE PROCEDURE TCABS_UnitOff_add(IN unitCode Varchar(10), IN convenorEmail varchar(255), IN term varchar(10), IN year varchar(10), IN censusDate varchar(255))
+    BEGIN
+            declare Exitname varchar(255) default"problem";
+		-- I keep getting error -subquery returns more than one row
+            DECLARE exit handler for sqlexception
+            Begin
+                GET DIAGNOSTICS CONDITION 1
+                 Exitname = MESSAGE_TEXT;
+				rollback;
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = Exitname;
+            end;
+            START TRANSACTION;
+				
+				CALL tcabs.TCABSUNITOFFERINGAddNewOffering(unitCode, term, year);
+				CALL tcabs.TCABSUNITOFFERINGSetCensusDate(unitCode, term, year, censusDate);
+				call TCABSOFFERINGSTAFFAddOfferingStaff(convenorEmail,unitCode, term, year);
+				CALL tcabs.TCABSUNITOFFERINGSetConvenor(convenorEmail, unitCode, term, year);
+			COMMIT;
+	END
+    // 
+DELIMITER ;
+
+-- select * from unitoffering;
+ -- rollback;
+ -- select * from unit;
+call TCABSUNITAddnewunit("ICT30004","database");
+call TCABS_UnitOff_add("ICT30004","dtargaryen@gmail.com","semester 1","2019",STR_TO_DATE("2019-5-20", '%Y-%m-%d'));
  
+ /*
              DELIMITER //
 create Procedure TCABSTeamAddTeam(in NewTeamName varchar(255), in UserEmail varchar(255), in SelectedUnitCode varchar(255), in SelectedOfferingterm varchar(255), in SelectedOfferingyear varchar(255))
 	BEGIN
@@ -1078,7 +1101,7 @@ create Procedure TCABSTEAMMEMBERAddTeamMember(in StudentEmail varchar(255),in Te
         if ((select count(*) from Users where email = SupervisorEmail) <> 1) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "entered Supervisor Email does not exist";
         end if;
-        /*
+        
         call TCABSUNITOFFERINGGetKey(SelectedUnitCode, SelectedOfferingterm, SelectedOfferingyear, @ValuesunitOfferingID);
         
         select enrolmentID into StoredEnrolmentID from Enrolment where unitOfferingID = @ValuesunitOfferingID and sUserName = StudentEmail;
@@ -1089,8 +1112,8 @@ create Procedure TCABSTEAMMEMBERAddTeamMember(in StudentEmail varchar(255),in Te
         if (TCABSDateValiadationCheckUnitOfferingVsSystem(SelectedOfferingterm,SelectedOfferingyear)) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "you can not add a team member to a unit which has already concluded";
         end if;
-        */
- /*       
+        
+        
         call TCABSENROLMENTGetEnrolKey(StudentEmail,SelectedUnitCode, SelectedOfferingterm, SelectedOfferingyear, @ValueEnrolID);
         
         call TCABSTeamGetTeamKey(Teamname,SupervisorEmail,SelectedUnitCode, SelectedOfferingterm, SelectedOfferingyear, @ValuesTeamID);
@@ -1504,12 +1527,12 @@ END //
  call PeerAssessmentFeildGetFeildKey("AssessMe","Name",@ValueFeildID);
  
                      DELIMITER //
-create Procedure SPAINSTENCEAddInstence(in EnteredName varchar(255), in EnteredAssessmentDate date, in StudentEmail Varchar(255), in Teamname varchar(255), in SupervisorEmail varchar(255), in SelectedUnitCode varchar(255), in SelectedOfferingterm varchar(255), in SelectedOfferingyear varchar(255))
+create Procedure SPAINSTENCEAddInstence(in EnteredName varchar(255), in EnteredAssessmentDate date, in SelectedUnitCode varchar(255), in SelectedOfferingterm varchar(255), in SelectedOfferingyear varchar(255))
 	BEGIN
 		
         declare TimerestricStart,TimeresticEnd date;
         
-        call TCABSTEAMMEMBERGetTeamMember(StudentEmail,Teamname,SupervisorEmail,SelectedUnitCode, SelectedOfferingterm, SelectedOfferingyear, @ValueTeamMemberID);
+        call TCABSUNITOFFERINGGetKey(SelectedUnitCode, SelectedOfferingterm, SelectedOfferingyear, @ValuesunitOfferingID);
         call STUDENTPEERASSESSMENTGetAssessmentKey(EnteredName,@ValueSPAKey);
         
         select StartDate,Enddate into TimerestricStart,TimeresticEnd from TeachingPeriod where Term = SelectedOfferingterm and Year = SelectedOfferingyear;
@@ -1522,23 +1545,23 @@ create Procedure SPAINSTENCEAddInstence(in EnteredName varchar(255), in EnteredA
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "you cannot schedual a peer assessment after the period occurs";
         end if;
         
-        if ((select count(*) from SPAInstence where TeamMemberID = @ValueTeamMemberID and SPAID = @ValueSPAKey and AssessmentDate = EnteredAssessmentDate) >= 1) then
+        if ((select count(*) from SPAInstence where UnitOfferingID = @ValuesunitOfferingID and SPAID = @ValueSPAKey and AssessmentDate = EnteredAssessmentDate) >= 1) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "entered Assessment already exist";
         end if;
-        insert into SPAInstence(TeamMemberID,SPAID,AssessmentDate) values (@ValueTeamMemberID,@ValueSPAKey,EnteredAssessmentDate);
+        insert into SPAInstence(UnitOfferingID,SPAID,AssessmentDate) values (@ValuesunitOfferingID,@ValueSPAKey,EnteredAssessmentDate);
 END //
  DELIMITER ;
  
                       DELIMITER //
-create Procedure SPAINSTENCEGetInstenceKey(in EnteredName varchar(255), in EnteredAssessmentDate date, in StudentEmail Varchar(255), in Teamname varchar(255), in SupervisorEmail varchar(255), in SelectedUnitCode varchar(255), in SelectedOfferingterm varchar(255), in SelectedOfferingyear varchar(255), out valueSPAInstenceKey int)
+create Procedure SPAINSTENCEGetInstenceKey(in EnteredName varchar(255), in EnteredAssessmentDate date, in SelectedUnitCode varchar(255), in SelectedOfferingterm varchar(255), in SelectedOfferingyear varchar(255), out valueSPAInstenceKey int)
 	BEGIN
 		-- AssessmentDate
       
         
-        call TCABSTEAMMEMBERGetTeamMember(StudentEmail,Teamname,SupervisorEmail,SelectedUnitCode, SelectedOfferingterm, SelectedOfferingyear, @ValueTeamMemberID);
+		call TCABSUNITOFFERINGGetKey(SelectedUnitCode, SelectedOfferingterm, SelectedOfferingyear, @ValuesunitOfferingID);
         call STUDENTPEERASSESSMENTGetAssessmentKey(EnteredName,@ValueSPAKey);
         
-        select SPAInstenceID into valueSPAInstenceKey from SPAInstence where TeamMemberID = @ValueTeamMemberID and SPAID = @ValueSPAKey and AssessmentDate = EnteredAssessmentDate;
+        select SPAInstenceID into valueSPAInstenceKey from SPAInstence where UnitOfferingID = @ValuesunitOfferingID and SPAID = @ValueSPAKey and AssessmentDate = EnteredAssessmentDate;
 		
         if (valueSPAInstenceKey is null) then
 			SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "entered Peer assessment and Student team member combination doesn't exist";
@@ -1546,39 +1569,10 @@ create Procedure SPAINSTENCEGetInstenceKey(in EnteredName varchar(255), in Enter
 END //
  DELIMITER ;
  -- add the peer reveiw instence of X with the due date of Y for the user team member of Z in the team of A with the superviosor of B for the subject of C in the period of D in the year of E
-  call SPAINSTENCEAddInstence("AssessMe",'2019-07-14',"Example@hotmail.com","testTeam2","dtargaryen@gmail.com","ICT30002", "Semester 1", "2019");
+  call SPAINSTENCEAddInstence("AssessMe",'2019-07-14',"ICT30002", "Semester 1", "2019");
   -- This should only be used in procedurers
-  call SPAINSTENCEGetInstenceKey("AssessMe",'2019-07-14',"Example@hotmail.com","testTeam2","dtargaryen@gmail.com","ICT30002", "Semester 1", "2019",@valueSPAInstenceKey);
-/*
-Create Table StudentPeerAssessment (
-	SPAID					int				auto_increment,
-    AssessmentName			varchar(255) 	Not Null,
-    
-    
-	primary key (SPAID)
-);
-
-Create Table SPAInstence (
-	SPAInstenceID			int				Not null,
-    TeamMemberID			int				not null,
-    SPAID					int 			not null,
-    AssessmentDate			date			not null,
-    
-	primary key (SPAInstenceID),
-    Foreign Key (SPAID) REFERENCES StudentPeerAssessment(SPAID),
-    Foreign Key (TeamMemberID) REFERENCES TeamMember(TeamMemberID)
-);
-
-Create Table PeerAssessmentFeild (
-	FeildID					int				auto_increment,
-    SPAID					int 			not null,
-    FeildName				varchar(255)	not null,
-    FeildDescription		text			not null,
-	primary key (FeildID),
-    Foreign Key (SPAID) REFERENCES StudentPeerAssessment(SPAID)
-);
+  call SPAINSTENCEGetInstenceKey("AssessMe",'2019-07-14',"ICT30002", "Semester 1", "2019",@valueSPAInstenceKey);
 */
-
 
 -- ---------------------------------------No Procedures or Functions after this point -----------------------------------------------
 -- Functions
