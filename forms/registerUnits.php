@@ -23,28 +23,26 @@
 					} else if($_POST['submit'] === "bulkAddUnits") {
 				
 					} else if($_POST['submit'] === "search") {
-							if($_POST['searchQuery'] == null) {
-								echo "<script type='text/javascript'>alert('Search Box empty');</script>";
-							} else {
-								try {
-									$searchResults = $unitObj->searchUnit("%{$_POST['searchQuery']}%");
-									if($searchResults == null) {
-										echo "<script type='text/javascript'>alert('Oops nothing found!');</script>";
-									} else {
-										// adding search results to frontend goes here
-										print_r($searchResults);
-									}
-								} catch(mysqli_sql_exception $e) {
-									echo $e->getMessage();
-									exit();
-									echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
+						if($_POST['searchQuery'] == null) {
+							echo "<script type='text/javascript'>alert('Search Box empty');</script>";
+						} else {
+							try {
+								$searchResults = $unitObj->searchUnit("%{$_POST['searchQuery']}%");
+								if($searchResults == null) {
+									echo "<script type='text/javascript'>alert('Oops nothing found!');</script>";
+								} else {
+									// adding search results to frontend goes here
+									print_r($searchResults);
 								}
+							} catch(mysqli_sql_exception $e) {
+								echo $e->getMessage();
+								exit();
+								echo "<script type='text/javascript'>alert('{$e->getMessage()}');</script>";
 							}
 						}
 					}
 				}
 			}
-
 		}
 	}
 ?>
@@ -98,7 +96,7 @@
 			</div>
 
 			<!-- Tab 2 -->
-  		<div class="tab-pane container active" id="menu1">
+  		<div class="tab-pane container fade" id="menu1">
 				<form action="registerUnits.php" method ="post" class="was-validated"><br/>
   	  		<p class="h4 mb-4 text-center">Bulk Import</p>
   				<div class="form-group">
@@ -110,7 +108,7 @@
 			</div>
 
 			<!-- Tab 3 -->
-  		<div class="tab-pane container active" id="menu2">
+  		<div class="tab-pane container fade" id="menu2">
 				<form method="POST" class="was-validated"><br/>
   	 		 	<p class="h4 mb-4 text-center">Update/Delete Unit</p>
 				<!--	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -146,7 +144,7 @@
 			</div>
 
 <!--
-  		<div class="tab-pane container active" id="menu3">
+  		<div class="tab-pane container fade" id="menu3">
 				<form action="registerUnits.php" method ="post" class="was-validated"><br>
   	 		 	<p class="h4 mb-4 text-center">Delete User</p>
 
