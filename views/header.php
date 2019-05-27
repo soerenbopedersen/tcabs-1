@@ -15,28 +15,28 @@
 			<?php 
 
 				$adminArr = array(
-					"../manageUsers.php" => "Manage Users",
-					"../manageUnits.php" => "Manage Units",
-					"../manageUnitOfferings.php" => "Manage Unit Offerings",
-					"../manageEnrolments.php" => "Manage Enrolments"
+					"registerUser.php" => "Manage Users",
+					"registerUnits.php" => "Manage Units",
+					// "registerStudents.php" => "Register Students",
+					"enrolStudents.php" => "Manage Enrolments"
 				);
 
 				$convenorArr = array(
-					"../manageTeams.php" => "Manage Teams",
-					"../manageProjects.php" => "Manage Projects",
-					"../setupRoles.php" => "Manage Roles",
-					"../allocateRoles.php" => "Allocate Roles",
+					"registerTeam.php" => "Manage Teams",
+					"registerProject.php" => "Manage Projects",
+					"setupRoles.php" => "Manage Roles",
+					"allocateRoles.php" => "Allocate Roles",
 				);
 
 				$supervisorArr = array(
-					"../supervisorMeeting.php" => "Meetings",
+					"supervisorMeeting.php" => "Meetings",
 				);
 
 				$studentArr = array(
-					"../studentTasks.php" => "Tasks",
-					"../studentPeerAssess.php" => "Peer Assessment",
-					"../studentSupervisorMeeting.php" => "Supervisor Meetings",
-					"../studentTeamMeeting.php" => "Team Meetings",
+					"studentTasks.php" => "Tasks",
+					"studentPeerAssess.php" => "Peer Assessment",
+					"studentSupervisorMeeting.php" => "Supervisor Meetings",
+					"studentTeamMeeting.php" => "Team Meetings",
 					
 				);
 
